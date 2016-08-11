@@ -60,10 +60,10 @@ def run():
                 assert os.path.isfile(image_path)
 
                 if image_index == 0:
-                    # Set today"s photo as the background
+                    # Set today's photo as the background
                     change_background(image_path)
                 elif image_index == 1:
-                    # Set yesterday"s photo as the screensaver
+                    # Set yesterday's photo as the screensaver
                     change_screensaver(image_path)
 
             ready_to_exit = True
