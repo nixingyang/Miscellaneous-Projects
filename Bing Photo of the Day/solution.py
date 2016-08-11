@@ -1,15 +1,15 @@
-#!/usr/bin/python
-#-*- coding: utf-8 -*-
-
 import locale
 import os
 import re
 import sys
-try:  # try python 3 import
+
+try:
+    # Python 3
     from urllib.request import urlopen
     from urllib.request import urlretrieve
     from configparser import ConfigParser
-except ImportError:  # fall back to python2
+except ImportError:
+    # Python 2
     from urllib import urlretrieve
     from urllib2 import urlopen
     from ConfigParser import ConfigParser
@@ -282,12 +282,12 @@ def main():
         summary = 'Error executing %s' % app_name
         body = err
         exit_status = 1
-        
-    text = str(image_name) + " -- " + str(body) +  "\n"  
-    
+
+    text = str(image_name) + " -- " + str(body) + "\n"
+
     if "already exists" not in text:
         with open(download_path + "/image-details.txt", "a+") as myfile:
-            myfile.write(text)        
+            myfile.write(text)
 
     app_notification = Notify.Notification.new(summary, str(body))
     app_notification.show()
