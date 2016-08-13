@@ -27,7 +27,7 @@ def get_image_detail():
 
         # Get the image detail
         for image_index, image_metadata in enumerate(image_metadata_list):
-            image_name = "{}.jpg".format(image_metadata.find("startdate").text)
+            image_name = "{}_{}.jpg".format(image_metadata.find("startdate").text, image_metadata.find("urlBase").text.split("/")[-1].split("_")[0])
             image_URL = "https://www.bing.com{}_{}.jpg".format(image_metadata.find("urlBase").text, SCREEN_RESOLUTION)
             yield (image_index, image_name, image_URL)
 
