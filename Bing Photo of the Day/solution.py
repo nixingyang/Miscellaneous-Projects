@@ -10,10 +10,11 @@ import ctypes
 libc = ctypes.cdll.LoadLibrary("libc.so.6")
 res_init = libc.__res_init
 
-WAITING_TIME = 5
 BING_MARKET = None
 SCREEN_RESOLUTION = "1920x1080"
 GALLERY_FOLDER_PATH = "/run/media/nixingyang/Data Center/OneDrive/Pictures/Bing Gallery"
+WAITING_TIME_WHEN_SUCCESSFUL = 600
+WAITING_TIME_WHEN_UNSUCCESSFUL = 60
 
 def get_image_detail():
     # Compose the query URL
@@ -46,9 +47,9 @@ def change_screensaver(image_path):
     change_setting("org.gnome.desktop.screensaver", "picture-uri", format_file_path(image_path))
 
 def run():
-    ready_to_exit = False
-    while not ready_to_exit:
+    while True:
         try:
+            # Re-read the resolver configuration file
             res_init()
 
             for image_index, image_name, image_URL in get_image_detail():
@@ -69,9 +70,11 @@ def run():
                     # Set yesterday's photo as the screensaver
                     change_screensaver(image_path)
 
-            ready_to_exit = True
+            waiting_time = WAITING_TIME_WHEN_SUCCESSFUL
         except:
-            time.sleep(WAITING_TIME)
+            waiting_time = WAITING_TIME_WHEN_UNSUCCESSFUL
+        finally:
+            time.sleep(waiting_time)
 
 if __name__ == "__main__":
     run()
