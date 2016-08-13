@@ -11,13 +11,14 @@ libc = ctypes.cdll.LoadLibrary("libc.so.6")
 res_init = libc.__res_init
 
 WAITING_TIME = 5
-BING_MARKET = "fi-FI"
+BING_MARKET = None
 SCREEN_RESOLUTION = "1920x1080"
 GALLERY_FOLDER_PATH = "/run/media/nixingyang/Data Center/OneDrive/Pictures/Bing Gallery"
 
 def get_image_detail():
     # Fetch the image metadata
-    query_URL = "https://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=2&mkt={}".format(BING_MARKET)
+    market_argument = "" if BING_MARKET is None else"&mkt={}".format(BING_MARKET)
+    query_URL = "https://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=2{}".format(market_argument)
     query_connection = urlopen(query_URL)
     image_metadata_list = ElementTree.parse(query_connection).getroot().findall("image")
     assert len(image_metadata_list) == 2
