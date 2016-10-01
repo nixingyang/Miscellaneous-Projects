@@ -17,20 +17,37 @@ WAITING_TIME_WHEN_SUCCESSFUL = 600
 WAITING_TIME_WHEN_UNSUCCESSFUL = 60
 
 def get_image_detail():
-    # Compose the query URL
-    market_argument = "" if BING_MARKET is None else"&mkt={}".format(BING_MARKET)
-    query_URL = "https://www.bing.com/HPImageArchive.aspx?format=xml&idx=0&n=2{}".format(market_argument)
+    idx = -1
+    market_argument = "" if BING_MARKET is None else "&mkt={}".format(BING_MARKET)
+    image_name_list = []
+    image_URL_list = []
 
-    # Fetch the image metadata
-    with urlopen(query_URL) as query_connection:
-        image_metadata_list = ElementTree.parse(query_connection).getroot().findall("image")
-        assert len(image_metadata_list) == 2
+    try:
+        while True:
+            # Compose the query URL
+            query_URL = "https://www.bing.com/HPImageArchive.aspx?format=xml&idx={}&n=1{}".format(idx, market_argument)
 
-        # Get the image detail
-        for image_index, image_metadata in enumerate(image_metadata_list):
-            image_name = "{}_{}.jpg".format(image_metadata.find("startdate").text, image_metadata.find("urlBase").text.split("/")[-1].split("_")[0])
-            image_URL = "https://www.bing.com{}_{}.jpg".format(image_metadata.find("urlBase").text, SCREEN_RESOLUTION)
-            yield (image_index, image_name, image_URL)
+            # Fetch the image metadata
+            with urlopen(query_URL) as query_connection:
+                image_metadata_list = ElementTree.parse(query_connection).getroot().findall("image")
+
+                # Get the image detail
+                for image_metadata in image_metadata_list:
+                    image_name = "{}_{}.jpg".format(image_metadata.find("startdate").text, image_metadata.find("urlBase").text.split("/")[-1].split("_")[0])
+                    image_URL = "https://www.bing.com{}_{}.jpg".format(image_metadata.find("urlBase").text, SCREEN_RESOLUTION)
+
+                    image_name_list.append(image_name)
+                    image_URL_list.append(image_URL)
+
+            # Move to previous day
+            idx += 1
+    except:
+        pass
+
+    if len(image_name_list) > 0:
+        return image_name_list, image_URL_list
+    else:
+        return None
 
 def format_file_path(file_path):
     return "file://{}".format(file_path)
@@ -47,18 +64,24 @@ def change_screensaver(image_path):
     change_setting("org.gnome.desktop.screensaver", "picture-uri", format_file_path(image_path))
 
 def run():
+    # Create the parent directory
+    if not os.path.isdir(GALLERY_FOLDER_PATH):
+        os.makedirs(GALLERY_FOLDER_PATH)
+
     while True:
         try:
             # Re-read the resolver configuration file
             res_init()
 
-            for image_index, image_name, image_URL in get_image_detail():
-                # Create the parent directory
-                if not os.path.isdir(GALLERY_FOLDER_PATH):
-                    os.makedirs(GALLERY_FOLDER_PATH)
-                image_path = os.path.join(GALLERY_FOLDER_PATH, image_name)
+            # Get image detail
+            image_detail = get_image_detail()
+            if image_detail is None:
+                assert False
 
+            image_name_list, image_URL_list = image_detail
+            for image_index, (image_name, image_URL) in enumerate(zip(image_name_list, image_URL_list)):
                 # Download the image
+                image_path = os.path.join(GALLERY_FOLDER_PATH, image_name)
                 if not os.path.isfile(image_path):
                     urlretrieve(image_URL, image_path)
                 assert os.path.isfile(image_path)
