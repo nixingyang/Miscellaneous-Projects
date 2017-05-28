@@ -4,8 +4,15 @@ import os
 import re
 import json
 import time
+import piexif
 import requests
 import argparse
+from datetime import datetime
+
+# http://bugs.python.org/issue22377
+# https://docs.python.org/2/library/time.html
+os.environ["TZ"] = "CST"
+time.tzset()
 
 class Cookie(object):
     def __init__(self, account, password):
@@ -102,7 +109,8 @@ class Image(Album):
             original_image_URL = large_image_URL.replace("large", "original")
             image_name = image_info["title"] if image_info["title"] else int(image_info["id"])
             image_name = str(image_name) + "." + large_image_URL.split("/")[-1].split(".")[-1]
-            yield image_name, (original_image_URL, large_image_URL)
+            image_time = image_info["time"]
+            yield image_name, (original_image_URL, large_image_URL), image_time
 
 def download_image(image_URL, image_file_path, timeout=3, sleep_duration=0.3, retry_num=3):
     assert not os.path.isfile(image_file_path), "File {} already exists!".format(image_file_path)
@@ -134,7 +142,7 @@ def download_album(account, password, main_folder_path):
         album_folder_path = os.path.join(main_folder_path, album_name)
         os.makedirs(album_folder_path, exist_ok=True)
 
-        for image_name, image_URL_tuple in Image(cookie_object=cookie_object, album_URL=album_URL).iterate_image_info():
+        for image_name, image_URL_tuple, image_time in Image(cookie_object=cookie_object, album_URL=album_URL).iterate_image_info():
             image_file_path = os.path.join(album_folder_path, image_name)
             if os.path.isfile(image_file_path):
                 continue
@@ -147,6 +155,14 @@ def download_album(account, password, main_folder_path):
 
             if not os.path.isfile(image_file_path):
                 print("Failed to download image {}!".format(image_name))
+                continue
+
+            # Insert EXIF information
+            datetime_object = datetime.strptime(image_time, "%a %b %d %H:%M:%S %Z %Y")
+            exif_ifd = {piexif.ExifIFD.DateTimeOriginal: datetime_object.isoformat(" ")}
+            exif_dict = {"Exif": exif_ifd}
+            exif_bytes = piexif.dump(exif_dict)
+            piexif.insert(exif_bytes, image_file_path)
 
 def run():
     print("Parsing command-line arguments ...")
