@@ -108,7 +108,7 @@ class Image(Album):
             large_image_URL = image_info["largeUrl"]
             original_image_URL = large_image_URL.replace("large", "original")
             image_name = image_info["title"] if image_info["title"] else int(image_info["id"])
-            image_name = str(image_name) + "." + large_image_URL.split("/")[-1].split(".")[-1]
+            image_name = str(image_name).replace(os.sep, " ") + "." + large_image_URL.split("/")[-1].split(".")[-1]
             image_time = image_info["time"]
             yield image_name, (original_image_URL, large_image_URL), image_time
 
