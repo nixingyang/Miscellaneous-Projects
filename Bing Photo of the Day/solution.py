@@ -16,38 +16,30 @@ GALLERY_FOLDER_PATH = os.path.join(os.environ["HOME"], "Pictures/Bing Gallery")
 WAITING_TIME_WHEN_SUCCESSFUL = 600
 WAITING_TIME_WHEN_UNSUCCESSFUL = 60
 
-def get_image_detail():
-    idx = -1
-    market_argument = "" if BING_MARKET is None else "&mkt={}".format(BING_MARKET)
-    image_name_list = []
-    image_URL_list = []
-
+def has_internet_connection(server_URL="https://www.bing.com"):
     try:
-        while True:
-            # Compose the query URL
-            query_URL = "https://www.bing.com/HPImageArchive.aspx?format=xml&idx={}&n=1{}".format(idx, market_argument)
-
-            # Fetch the image metadata
-            with urlopen(query_URL) as query_connection:
-                image_metadata_list = ElementTree.parse(query_connection).getroot().findall("image")
-
-                # Get the image detail
-                for image_metadata in image_metadata_list:
-                    image_name = "{}_{}.jpg".format(image_metadata.find("startdate").text, image_metadata.find("urlBase").text.split("/")[-1].split("_")[0])
-                    image_URL = "https://www.bing.com{}_{}.jpg".format(image_metadata.find("urlBase").text, SCREEN_RESOLUTION)
-
-                    image_name_list.append(image_name)
-                    image_URL_list.append(image_URL)
-
-            # Move to previous day
-            idx += 1
+        with urlopen(server_URL) as _:
+            return True
     except:
-        pass
+        return False
 
-    if len(image_name_list) > 0:
-        return image_name_list, image_URL_list
-    else:
-        return None
+def yield_image_detail():
+    market_argument = "" if BING_MARKET is None else "&mkt={}".format(BING_MARKET)
+
+    for idx in [-1, 100]:
+        # Compose the query URL
+        query_URL = "https://www.bing.com/HPImageArchive.aspx?format=xml&idx={}&n=100{}".format(idx, market_argument)
+
+        # Fetch the image metadata
+        with urlopen(query_URL) as query_connection:
+            image_metadata_list = ElementTree.parse(query_connection).getroot().findall("image")
+
+            # Get the image detail
+            for image_metadata in image_metadata_list:
+                image_name = "{}_{}.jpg".format(image_metadata.find("startdate").text, image_metadata.find("urlBase").text.split("/")[-1].split("_")[0])
+                image_URL = "https://www.bing.com{}_{}.jpg".format(image_metadata.find("urlBase").text, SCREEN_RESOLUTION)
+
+                yield image_name, image_URL
 
 def format_file_path(file_path):
     return "file://{}".format(file_path)
@@ -73,13 +65,11 @@ def run():
             # Re-read the resolver configuration file
             res_init()
 
-            # Get image detail
-            image_detail = get_image_detail()
-            if image_detail is None:
-                assert False
+            # Check internet connection
+            assert has_internet_connection()
 
-            image_name_list, image_URL_list = image_detail
-            for image_index, (image_name, image_URL) in enumerate(zip(image_name_list, image_URL_list)):
+            # Iterate over image detail
+            for image_index, (image_name, image_URL) in enumerate(yield_image_detail()):
                 # Download the image
                 image_path = os.path.join(GALLERY_FOLDER_PATH, image_name)
                 if not os.path.isfile(image_path):
