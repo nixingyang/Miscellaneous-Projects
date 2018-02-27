@@ -1,3 +1,7 @@
+"""
+    Modified from https://github.com/tdeboissiere/DeepLearningImplementations/blob/master/pix2pix/src/model/models.py
+"""
+
 from keras.models import Model
 from keras.layers.core import Flatten, Dense, Dropout, Activation, Lambda, Reshape
 from keras.layers.convolutional import Conv2D, Deconv2D, ZeroPadding2D, UpSampling2D
@@ -8,7 +12,6 @@ from keras.layers.pooling import MaxPooling2D
 import keras.backend as K
 import numpy as np
 
-
 def minb_disc(x):
     diffs = K.expand_dims(x, 3) - K.expand_dims(K.permute_dimensions(x, [1, 2, 0]), 0)
     abs_diffs = K.sum(K.abs(diffs), 2)
@@ -16,10 +19,8 @@ def minb_disc(x):
 
     return x
 
-
 def lambda_output(input_shape):
     return input_shape[:2]
-
 
 # def conv_block_unet(x, f, name, bn_mode, bn_axis, bn=True, dropout=False, strides=(2,2)):
 
@@ -31,7 +32,6 @@ def lambda_output(input_shape):
 #         x = Dropout(0.5)(x)
 
 #     return x
-
 
 # def up_conv_block_unet(x1, x2, f, name, bn_mode, bn_axis, bn=True, dropout=False):
 
@@ -47,7 +47,7 @@ def lambda_output(input_shape):
 
 #     return x
 
-def conv_block_unet(x, f, name, bn_mode, bn_axis, bn=True, strides=(2,2)):
+def conv_block_unet(x, f, name, bn_mode, bn_axis, bn=True, strides=(2, 2)):
 
     x = LeakyReLU(0.2)(x)
     x = Conv2D(f, (3, 3), strides=strides, name=name, padding="same")(x)
@@ -55,7 +55,6 @@ def conv_block_unet(x, f, name, bn_mode, bn_axis, bn=True, strides=(2,2)):
         x = BatchNormalization(axis=bn_axis)(x)
 
     return x
-
 
 def up_conv_block_unet(x, x2, f, name, bn_mode, bn_axis, bn=True, dropout=False):
 
@@ -70,7 +69,6 @@ def up_conv_block_unet(x, x2, f, name, bn_mode, bn_axis, bn=True, dropout=False)
 
     return x
 
-
 def deconv_block_unet(x, x2, f, h, w, batch_size, name, bn_mode, bn_axis, bn=True, dropout=False):
 
     o_shape = (batch_size, h * 2, w * 2, f)
@@ -83,7 +81,6 @@ def deconv_block_unet(x, x2, f, h, w, batch_size, name, bn_mode, bn_axis, bn=Tru
     x = Concatenate(axis=bn_axis)([x, x2])
 
     return x
-
 
 def generator_unet_upsampling(img_dim, bn_mode, model_name="generator_unet_upsampling"):
 
@@ -133,12 +130,11 @@ def generator_unet_upsampling(img_dim, bn_mode, model_name="generator_unet_upsam
     x = Activation("relu")(list_decoder[-1])
     x = UpSampling2D(size=(2, 2))(x)
     x = Conv2D(nb_channels, (3, 3), name="last_conv", padding="same")(x)
-    x = Activation("tanh")(x)
+    x = Activation("sigmoid")(x)
 
     generator_unet = Model(inputs=[unet_input], outputs=[x])
 
     return generator_unet
-
 
 def generator_unet_deconv(img_dim, bn_mode, batch_size, model_name="generator_unet_deconv"):
 
@@ -191,12 +187,11 @@ def generator_unet_deconv(img_dim, bn_mode, batch_size, model_name="generator_un
     x = Activation("relu")(list_decoder[-1])
     o_shape = (batch_size,) + img_dim
     x = Deconv2D(nb_channels, (3, 3), output_shape=o_shape, strides=(2, 2), padding="same")(x)
-    x = Activation("tanh")(x)
+    x = Activation("sigmoid")(x)
 
     generator_unet = Model(inputs=[unet_input], outputs=[x])
 
     return generator_unet
-
 
 def DCGAN_discriminator(img_dim, nb_patch, bn_mode, model_name="DCGAN_discriminator", use_mbd=True):
     """
@@ -270,7 +265,6 @@ def DCGAN_discriminator(img_dim, nb_patch, bn_mode, model_name="DCGAN_discrimina
 
     return discriminator_model
 
-
 def DCGAN(generator, discriminator_model, img_dim, patch_size, image_dim_ordering):
 
     gen_input = Input(shape=img_dim, name="DCGAN_input")
@@ -303,7 +297,6 @@ def DCGAN(generator, discriminator_model, img_dim, patch_size, image_dim_orderin
 
     return DCGAN
 
-
 def load(model_name, img_dim, nb_patch, bn_mode, use_mbd, batch_size):
 
     if model_name == "generator_unet_upsampling":
@@ -326,7 +319,6 @@ def load(model_name, img_dim, nb_patch, bn_mode, use_mbd, batch_size):
         from keras.utils import plot_model
         plot_model(model, to_file="../../figures/%s.png" % model_name, show_shapes=True, show_layer_names=True)
         return model
-
 
 if __name__ == "__main__":
 
