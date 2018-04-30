@@ -10,6 +10,6 @@ This directory contains Python implementation which is capable of updating the b
 [Desktop Entry]
 Type=Application
 Terminal=false
-Exec=python "/opt/Bing Photo of the Day/solution.py"
+Exec=python3 "/opt/Bing Photo of the Day/solution.py"
 Name=Bing Photo of the Day
 ```

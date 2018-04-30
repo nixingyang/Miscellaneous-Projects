@@ -80,15 +80,10 @@ def run():
             assert has_internet_connection()
 
             # Delete redundant files
-            previous_urlBase_list = delete_redundant_files(GALLERY_FOLDER_PATH)
+            _ = delete_redundant_files(GALLERY_FOLDER_PATH)
 
             # Iterate over image detail
             for image_index, (image_name, image_URL) in enumerate(yield_image_detail()):
-                # Neglect redundant files
-                urlBase = image_name.split(".")[0].split("_")[1]
-                if urlBase in previous_urlBase_list:
-                    continue
-
                 # Download the image
                 image_path = os.path.join(GALLERY_FOLDER_PATH, image_name)
                 if not os.path.isfile(image_path):
