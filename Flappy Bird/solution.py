@@ -6,6 +6,11 @@ session = tf.Session(config=config)
 from keras import backend as K
 K.set_session(session)
 
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(__file__, "../external_resources/game")))
+from wrapped_flappy_bird import GameState  # @UnresolvedImport pylint: disable=import-error
+
 import numpy as np
 from keras.layers import Input, Conv2D, Activation, BatchNormalization, MaxPooling2D, GlobalAveragePooling2D, Dropout, Dense
 from keras.models import Model
@@ -38,7 +43,9 @@ def init_model():
     return model
 
 def run():
+    print("Initiating the model ...")
     model = init_model()
+
     print("All done!")
 
 if __name__ == "__main__":
