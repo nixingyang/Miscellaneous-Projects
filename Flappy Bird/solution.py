@@ -11,6 +11,7 @@ import numpy as np
 from collections import deque
 from keras.layers import Input, Conv2D, Activation, BatchNormalization, MaxPooling2D, GlobalAveragePooling2D, Dropout, Dense
 from keras.models import Model
+from keras.optimizers import Adam
 from keras.utils import plot_model
 
 import os
@@ -23,9 +24,12 @@ FRAME_HEIGHT, FRAME_WIDTH = 100, 60
 ACCUMULATED_FRAME_NUM = 5
 
 # Hyperparameters
+GAMMA = 0.99
 INITIAL_EPSILON, FINAL_EPSILON = 0.1, 0.0001
 OBSERVE_STEP_NUM, EXPLORE_STEP_NUM, TRAIN_STEP_NUM = int(1e4), int(1e6), np.inf
 SAMPLE_CONTAINER_MAX_LENGTH = int(1e5)
+BATCH_SIZE = 32
+LEARNING_RATE = 0.0001
 
 def init_model():
     # Define the input tensor
@@ -45,6 +49,7 @@ def init_model():
 
     # Define the model
     model = Model(input_tensor, output_tensor)
+    model.compile(loss="mean_squared_error", optimizer=Adam(lr=LEARNING_RATE))
     model.summary()
     plot_model(model, to_file="/tmp/model.png", show_shapes=True, show_layer_names=True)
     return model
@@ -77,9 +82,11 @@ def run():
     step_index = 0
     while True:
         step_index += 1
+        perform_training = True
         if step_index <= OBSERVE_STEP_NUM:
             print("observe {}/{}".format(step_index, OBSERVE_STEP_NUM))
             epsilon = INITIAL_EPSILON
+            perform_training = False
         elif step_index <= OBSERVE_STEP_NUM + EXPLORE_STEP_NUM:
             print("explore {}/{}".format(step_index - OBSERVE_STEP_NUM, EXPLORE_STEP_NUM))
             epsilon = FINAL_EPSILON + 1.0 * (OBSERVE_STEP_NUM + EXPLORE_STEP_NUM - step_index) / EXPLORE_STEP_NUM * (INITIAL_EPSILON - FINAL_EPSILON)
@@ -106,6 +113,22 @@ def run():
         sample = (accumulated_image_content_before, action_index, accumulated_image_content_after, reward, is_crashed)
         sample_container.append(sample)
 
+        # Perform training
+        if perform_training:
+            chosen_sample_list = [sample_container[index] for index in np.random.choice(len(sample_container), size=BATCH_SIZE)]
+            accumulated_image_content_before_tuple, action_index_tuple, accumulated_image_content_after_tuple, reward_tuple, is_crashed_tuple = zip(*chosen_sample_list)
+            accumulated_image_content_before_array = np.concatenate(accumulated_image_content_before_tuple)
+            accumulated_image_content_after_array = np.concatenate(accumulated_image_content_after_tuple)
+
+            reward_for_accumulated_image_content_before_array = model.predict_on_batch(accumulated_image_content_before_array)
+            reward_for_accumulated_image_content_after_array = model.predict_on_batch(accumulated_image_content_after_array)
+            reward_offset = GAMMA * np.max(reward_for_accumulated_image_content_after_array, axis=1) * np.invert(is_crashed_tuple)
+            reward_for_accumulated_image_content_before_array[:, action_index_tuple] = reward_tuple + reward_offset
+
+            train_loss = model.train_on_batch(accumulated_image_content_before_array, reward_for_accumulated_image_content_before_array)
+            print("train_loss: {:.5f}".format(train_loss))
+
+        # Update accumulated_image_content_before with accumulated_image_content_after
         accumulated_image_content_before = accumulated_image_content_after
 
     print("All done!")
