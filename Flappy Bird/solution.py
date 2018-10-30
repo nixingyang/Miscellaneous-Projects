@@ -23,9 +23,9 @@ FRAME_HEIGHT, FRAME_WIDTH = 100, 60
 ACCUMULATED_FRAME_NUM = 5
 
 # Hyperparameters
-EPSILON = 0.1
-OBSERVE_STEP_NUM = int(1e4)
-SAMPLE_CONTAINER_MAX_LENGTH = int(1e6)
+INITIAL_EPSILON, FINAL_EPSILON = 0.1, 0.0001
+OBSERVE_STEP_NUM, EXPLORE_STEP_NUM, TRAIN_STEP_NUM = int(1e4), int(1e6), np.inf
+SAMPLE_CONTAINER_MAX_LENGTH = int(1e5)
 
 def init_model():
     # Define the input tensor
@@ -63,6 +63,9 @@ def run():
     print("Initiating the GameState ...")
     game_state_object = GameState()
 
+    print("Initiating the sample container ...")
+    sample_container = deque([], maxlen=SAMPLE_CONTAINER_MAX_LENGTH)
+
     # Take "do nothing" action at the beginning
     vanilla_image_content, _, _ = game_state_object.frame_step(input_actions=[1, 0])
     processed_image_content = process_vanilla_image_content(vanilla_image_content)
@@ -71,14 +74,24 @@ def run():
     accumulated_image_content_before = np.stack([processed_image_content] * ACCUMULATED_FRAME_NUM, axis=-1)
     accumulated_image_content_before = np.expand_dims(accumulated_image_content_before, axis=0)
 
-    print("Entering observe mode ...")
-    sample_container = deque([], maxlen=SAMPLE_CONTAINER_MAX_LENGTH)
-    for observe_step in np.arange(OBSERVE_STEP_NUM) + 1:
-        print("observe {}/{}".format(observe_step, OBSERVE_STEP_NUM))
+    step_index = 0
+    while True:
+        step_index += 1
+        if step_index <= OBSERVE_STEP_NUM:
+            print("observe {}/{}".format(step_index, OBSERVE_STEP_NUM))
+            epsilon = INITIAL_EPSILON
+        elif step_index <= OBSERVE_STEP_NUM + EXPLORE_STEP_NUM:
+            print("explore {}/{}".format(step_index - OBSERVE_STEP_NUM, EXPLORE_STEP_NUM))
+            epsilon = FINAL_EPSILON + 1.0 * (OBSERVE_STEP_NUM + EXPLORE_STEP_NUM - step_index) / EXPLORE_STEP_NUM * (INITIAL_EPSILON - FINAL_EPSILON)
+        elif step_index <= OBSERVE_STEP_NUM + EXPLORE_STEP_NUM + TRAIN_STEP_NUM:
+            print("train {}/{}".format(step_index - OBSERVE_STEP_NUM - EXPLORE_STEP_NUM, TRAIN_STEP_NUM))
+            epsilon = FINAL_EPSILON
+        else:
+            break
 
         # Get the action_index either randomly or using predictions of the model
         input_actions = [0, 0]
-        if np.random.random() < EPSILON:
+        if np.random.random() < epsilon:
             action_index = np.random.choice(2)
         else:
             action_index = np.argmax(model.predict_on_batch(accumulated_image_content_before)[0])
