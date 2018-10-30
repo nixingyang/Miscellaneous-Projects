@@ -30,6 +30,10 @@ OBSERVE_STEP_NUM, EXPLORE_STEP_NUM, TRAIN_STEP_NUM = int(1e4), int(1e6), np.inf
 SAMPLE_CONTAINER_MAX_LENGTH = int(1e5)
 BATCH_SIZE = 32
 LEARNING_RATE = 0.0001
+SAVE_MODEL_INTERVAL = int(1e3)
+
+# Output
+OUTPUT_FOLDER_PATH = os.path.join("/tmp", __file__.split(os.sep)[-2])
 
 def init_model():
     # Define the input tensor
@@ -51,7 +55,7 @@ def init_model():
     model = Model(input_tensor, output_tensor)
     model.compile(loss="mean_squared_error", optimizer=Adam(lr=LEARNING_RATE))
     model.summary()
-    plot_model(model, to_file="/tmp/model.png", show_shapes=True, show_layer_names=True)
+    plot_model(model, to_file=os.path.join(OUTPUT_FOLDER_PATH, "model.png"), show_shapes=True, show_layer_names=True)
     return model
 
 def process_vanilla_image_content(vanilla_image_content):
@@ -62,6 +66,10 @@ def process_vanilla_image_content(vanilla_image_content):
     return processed_image_content
 
 def run():
+    print("Outputs will be saved to {} ...".format(OUTPUT_FOLDER_PATH))
+    if not os.path.isdir(OUTPUT_FOLDER_PATH):
+        os.makedirs(OUTPUT_FOLDER_PATH)
+
     print("Initiating the model ...")
     model = init_model()
 
@@ -127,6 +135,9 @@ def run():
 
             train_loss = model.train_on_batch(accumulated_image_content_before_array, reward_for_accumulated_image_content_before_array)
             print("train_loss: {:.5f}".format(train_loss))
+
+            if np.remainder(step_index, SAVE_MODEL_INTERVAL) == 0:
+                model.save(filepath=os.path.join(OUTPUT_FOLDER_PATH, "model.h5"), overwrite=True, include_optimizer=True)
 
         # Update accumulated_image_content_before with accumulated_image_content_after
         accumulated_image_content_before = accumulated_image_content_after
