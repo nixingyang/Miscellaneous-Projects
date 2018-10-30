@@ -6,6 +6,9 @@ session = tf.Session(config=config)
 from keras import backend as K
 K.set_session(session)
 
+import matplotlib
+matplotlib.use("Agg")
+
 import cv2
 import numpy as np
 from collections import deque
