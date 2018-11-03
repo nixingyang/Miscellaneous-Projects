@@ -33,10 +33,11 @@ OBSERVE_STEP_NUM, EXPLORE_STEP_NUM, TRAIN_STEP_NUM = int(1e4), int(1e6), np.inf
 SAMPLE_CONTAINER_MAX_LENGTH = int(1e5)
 BATCH_SIZE = 32
 LEARNING_RATE = 0.0001
-SAVE_MODEL_INTERVAL = int(1e3)
 
 # Output
 OUTPUT_FOLDER_PATH = os.path.join("/tmp", __file__.split(os.sep)[-2])
+MODEL_STRUCTURE_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.png")
+MODEL_WEIGHTS_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.h5")
 
 def init_model():
     # Define the input tensor
@@ -58,7 +59,7 @@ def init_model():
     model = Model(input_tensor, output_tensor)
     model.compile(loss="mean_squared_error", optimizer=Adam(lr=LEARNING_RATE))
     model.summary()
-    plot_model(model, to_file=os.path.join(OUTPUT_FOLDER_PATH, "model.png"), show_shapes=True, show_layer_names=True)
+    plot_model(model, to_file=MODEL_STRUCTURE_FILE_PATH, show_shapes=True, show_layer_names=True)
     return model
 
 def process_vanilla_image_content(vanilla_image_content):
@@ -84,13 +85,14 @@ def run():
 
     # Take "do nothing" action at the beginning
     vanilla_image_content, _, _ = game_state_object.frame_step(input_actions=[1, 0])
-    processed_image_content = process_vanilla_image_content(vanilla_image_content)
 
     # Get a dummy accumulated_image_content_before
+    processed_image_content = process_vanilla_image_content(vanilla_image_content)
     accumulated_image_content_before = np.stack([processed_image_content] * ACCUMULATED_FRAME_NUM, axis=-1)
     accumulated_image_content_before = np.expand_dims(accumulated_image_content_before, axis=0)
 
     step_index = 0
+    best_score = np.NINF
     while True:
         step_index += 1
         perform_training = True
@@ -117,9 +119,19 @@ def run():
 
         # Take actions
         vanilla_image_content, reward, is_crashed = game_state_object.frame_step(input_actions=input_actions)
-        processed_image_content = process_vanilla_image_content(vanilla_image_content)
+
+        # Save the model if necessary
+        if is_crashed:
+            current_score = game_state_object.get_score()
+            if current_score > best_score:
+                print("Best score improved from {} to {} ...".format(best_score, current_score))
+                best_score = current_score
+
+                print("Saving model to {} ...".format(MODEL_WEIGHTS_FILE_PATH))
+                model.save(filepath=MODEL_WEIGHTS_FILE_PATH, overwrite=True, include_optimizer=True)
 
         # Get accumulated_image_content_after and append observation
+        processed_image_content = process_vanilla_image_content(vanilla_image_content)
         accumulated_image_content_after = np.append(accumulated_image_content_before[:, :, :, 1:], np.expand_dims(np.expand_dims(processed_image_content, axis=-1), axis=0), axis=-1)
         sample = (accumulated_image_content_before, action_index, accumulated_image_content_after, reward, is_crashed)
         sample_container.append(sample)
@@ -138,9 +150,6 @@ def run():
 
             train_loss = model.train_on_batch(accumulated_image_content_before_array, reward_for_accumulated_image_content_before_array)
             print("train_loss: {:.5f}".format(train_loss))
-
-            if np.remainder(step_index, SAVE_MODEL_INTERVAL) == 0:
-                model.save(filepath=os.path.join(OUTPUT_FOLDER_PATH, "model.h5"), overwrite=True, include_optimizer=True)
 
         # Update accumulated_image_content_before with accumulated_image_content_after
         accumulated_image_content_before = accumulated_image_content_after
