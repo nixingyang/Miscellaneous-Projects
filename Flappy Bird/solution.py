@@ -38,6 +38,7 @@ LEARNING_RATE = 0.0001
 OUTPUT_FOLDER_PATH = os.path.join("/tmp", __file__.split(os.sep)[-2])
 MODEL_STRUCTURE_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.png")
 MODEL_WEIGHTS_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.h5")
+PREDICTION_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "prediction.mkv")
 
 def init_model():
     # Define the input tensor
@@ -63,8 +64,7 @@ def init_model():
     return model
 
 def process_vanilla_image_content(vanilla_image_content):
-    processed_image_content = np.swapaxes(vanilla_image_content, 0, 1)
-    processed_image_content = cv2.cvtColor(processed_image_content, cv2.COLOR_RGB2GRAY)
+    processed_image_content = cv2.cvtColor(vanilla_image_content, cv2.COLOR_RGB2GRAY)
     processed_image_content = cv2.resize(processed_image_content, (FRAME_WIDTH, FRAME_HEIGHT))
     processed_image_content = processed_image_content.astype(np.float32) / 255
     return processed_image_content
@@ -93,6 +93,7 @@ def run():
 
     step_index = 0
     best_score = np.NINF
+    vanilla_image_content_list = []
     while True:
         step_index += 1
         perform_training = True
@@ -119,6 +120,7 @@ def run():
 
         # Take actions
         vanilla_image_content, reward, is_crashed = game_state_object.frame_step(input_actions=input_actions)
+        vanilla_image_content_list.append(vanilla_image_content)
 
         # Save the model if necessary
         if is_crashed:
@@ -129,6 +131,14 @@ def run():
 
                 print("Saving model to {} ...".format(MODEL_WEIGHTS_FILE_PATH))
                 model.save(filepath=MODEL_WEIGHTS_FILE_PATH, overwrite=True, include_optimizer=True)
+
+                print("Saving prediction to {} ...".format(PREDICTION_FILE_PATH))
+                videowriter_object = cv2.VideoWriter(PREDICTION_FILE_PATH, cv2.VideoWriter_fourcc(*"X264"), 20.0, vanilla_image_content.shape[:-1][::-1])
+                for image_content in vanilla_image_content_list:
+                    image_content = cv2.cvtColor(image_content, cv2.COLOR_RGB2BGR)
+                    videowriter_object.write(image_content)
+                videowriter_object.release()
+                vanilla_image_content_list = []
 
         # Get accumulated_image_content_after and append observation
         processed_image_content = process_vanilla_image_content(vanilla_image_content)

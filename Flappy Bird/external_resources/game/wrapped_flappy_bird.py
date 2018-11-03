@@ -142,7 +142,7 @@ class GameState:
         pygame.display.update()
         FPSCLOCK.tick(FPS)
         #print self.upperPipes[0]['y'] + PIPE_HEIGHT - int(BASEY * 0.2)
-        return image_data, reward, terminal
+        return np.swapaxes(image_data, 0, 1), reward, terminal
 
     def get_score(self):
         return self.score
