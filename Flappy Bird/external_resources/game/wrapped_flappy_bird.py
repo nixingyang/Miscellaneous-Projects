@@ -140,7 +140,7 @@ class GameState:
 
         image_data = pygame.surfarray.array3d(pygame.display.get_surface())
         pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        # FPSCLOCK.tick(FPS)
         #print self.upperPipes[0]['y'] + PIPE_HEIGHT - int(BASEY * 0.2)
         return np.swapaxes(image_data, 0, 1), reward, terminal
 
