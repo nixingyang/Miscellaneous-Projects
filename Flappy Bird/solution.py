@@ -35,7 +35,7 @@ BATCH_SIZE = 32
 LEARNING_RATE = 0.0001
 
 # Output
-OUTPUT_FOLDER_PATH = os.path.join("/tmp", __file__.split(os.sep)[-2])
+OUTPUT_FOLDER_PATH = os.path.abspath(os.path.join(__file__, ".."))
 MODEL_STRUCTURE_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.png")
 MODEL_WEIGHTS_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.h5")
 PREDICTION_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "prediction.mkv")
