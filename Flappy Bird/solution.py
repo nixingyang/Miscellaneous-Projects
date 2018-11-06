@@ -12,7 +12,7 @@ matplotlib.use("Agg")
 import cv2
 import numpy as np
 from collections import deque
-from keras.layers import Input, Conv2D, Activation, BatchNormalization, MaxPooling2D, GlobalAveragePooling2D, Dropout, Dense
+from keras.layers import Input, Conv2D, Activation, GlobalAveragePooling2D, Dense
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.utils import plot_model
@@ -46,14 +46,10 @@ def init_model():
 
     # Get the output tensor
     output_tensor = input_tensor
-    for block_index in np.arange(3) + 1:
-        if block_index != 1:
-            output_tensor = MaxPooling2D()(output_tensor)
-        output_tensor = Conv2D(filters=32 * block_index, kernel_size=5, dilation_rate=2 ** (block_index - 1), padding="same")(output_tensor)
+    for block_index in np.arange(4) + 1:
+        output_tensor = Conv2D(filters=64 * block_index, kernel_size=5, strides=2, padding="same")(output_tensor)
         output_tensor = Activation("relu")(output_tensor)
-        output_tensor = BatchNormalization()(output_tensor)
     output_tensor = GlobalAveragePooling2D()(output_tensor)
-    output_tensor = Dropout(rate=0.2)(output_tensor)
     output_tensor = Dense(2)(output_tensor)
 
     # Define the model
