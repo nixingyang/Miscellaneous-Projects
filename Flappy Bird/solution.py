@@ -65,6 +65,16 @@ def process_vanilla_image_content(vanilla_image_content):
     processed_image_content = processed_image_content > 0
     return processed_image_content
 
+def reset_on_failure(game_state_object):
+    # Take "do nothing" action at the beginning
+    vanilla_image_content, _, _ = game_state_object.frame_step(input_actions=[1, 0])
+
+    # Get a dummy accumulated_image_content_before
+    processed_image_content = process_vanilla_image_content(vanilla_image_content)
+    accumulated_image_content_before = np.stack([processed_image_content] * ACCUMULATED_FRAME_NUM, axis=-1)
+    accumulated_image_content_before = np.expand_dims(accumulated_image_content_before, axis=0)
+    return accumulated_image_content_before
+
 def run():
     print("Outputs will be saved to {} ...".format(OUTPUT_FOLDER_PATH))
     if not os.path.isdir(OUTPUT_FOLDER_PATH):
@@ -78,14 +88,7 @@ def run():
 
     print("Initiating the sample container ...")
     sample_container = deque([], maxlen=SAMPLE_CONTAINER_MAX_LENGTH)
-
-    # Take "do nothing" action at the beginning
-    vanilla_image_content, _, _ = game_state_object.frame_step(input_actions=[1, 0])
-
-    # Get a dummy accumulated_image_content_before
-    processed_image_content = process_vanilla_image_content(vanilla_image_content)
-    accumulated_image_content_before = np.stack([processed_image_content] * ACCUMULATED_FRAME_NUM, axis=-1)
-    accumulated_image_content_before = np.expand_dims(accumulated_image_content_before, axis=0)
+    accumulated_image_content_before = reset_on_failure(game_state_object)
 
     step_index = 0
     best_score = np.NINF
@@ -157,8 +160,11 @@ def run():
             train_loss = model.train_on_batch(accumulated_image_content_before_array, reward_for_accumulated_image_content_before_array)
             print("train_loss: {:.5f}".format(train_loss))
 
-        # Update accumulated_image_content_before with accumulated_image_content_after
-        accumulated_image_content_before = accumulated_image_content_after
+        # Update accumulated_image_content_before
+        if is_crashed:
+            accumulated_image_content_before = reset_on_failure(game_state_object)
+        else:
+            accumulated_image_content_before = accumulated_image_content_after
 
     print("All done!")
 
