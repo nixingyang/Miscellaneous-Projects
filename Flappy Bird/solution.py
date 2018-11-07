@@ -62,7 +62,7 @@ def init_model():
 def process_vanilla_image_content(vanilla_image_content):
     processed_image_content = cv2.cvtColor(vanilla_image_content, cv2.COLOR_RGB2GRAY)
     processed_image_content = cv2.resize(processed_image_content, (FRAME_WIDTH, FRAME_HEIGHT))
-    processed_image_content = processed_image_content.astype(np.float32) / 255
+    processed_image_content = processed_image_content > 0
     return processed_image_content
 
 def run():
