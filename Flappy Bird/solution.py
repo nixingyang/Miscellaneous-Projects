@@ -124,7 +124,7 @@ def run():
 
         # Save the model if necessary
         if is_crashed:
-            current_score = game_state_object.get_score()
+            current_score = game_state_object.get_previous_final_score()
             if current_score > best_score:
                 print("Best score improved from {} to {} ...".format(best_score, current_score))
                 best_score = current_score
