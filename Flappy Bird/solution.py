@@ -138,7 +138,7 @@ def run():
                     image_content = cv2.cvtColor(image_content, cv2.COLOR_RGB2BGR)
                     videowriter_object.write(image_content)
                 videowriter_object.release()
-                vanilla_image_content_list = []
+            vanilla_image_content_list = []
 
         # Get accumulated_image_content_after and append observation
         processed_image_content = process_vanilla_image_content(vanilla_image_content)
