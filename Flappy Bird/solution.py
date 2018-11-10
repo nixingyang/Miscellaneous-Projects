@@ -33,6 +33,7 @@ OBSERVE_STEP_NUM, EXPLORE_STEP_NUM, TRAIN_STEP_NUM = int(1e4), int(1e6), np.inf
 SAMPLE_CONTAINER_MAX_LENGTH = int(1e5)
 BATCH_SIZE = 32
 LEARNING_RATE = 0.0001
+ACTION_NUM = 2
 
 # Output
 OUTPUT_FOLDER_PATH = os.path.abspath(os.path.join(__file__, ".."))
@@ -50,7 +51,7 @@ def init_model():
         output_tensor = Conv2D(filters=64 * block_index, kernel_size=5, strides=2, padding="same")(output_tensor)
         output_tensor = Activation("relu")(output_tensor)
     output_tensor = GlobalAveragePooling2D()(output_tensor)
-    output_tensor = Dense(2)(output_tensor)
+    output_tensor = Dense(ACTION_NUM)(output_tensor)
 
     # Define the model
     model = Model(input_tensor, output_tensor)
@@ -66,8 +67,8 @@ def process_vanilla_image_content(vanilla_image_content):
     return processed_image_content
 
 def reset_on_failure(game_state_object):
-    # Take "do nothing" action at the beginning
-    vanilla_image_content, _, _ = game_state_object.frame_step(input_actions=[1, 0])
+    # Take a dummy action at the beginning
+    vanilla_image_content, _, _ = game_state_object.frame_step(input_actions=[1] + [0] * (ACTION_NUM - 1))
 
     # Get a dummy accumulated_image_content_before
     processed_image_content = process_vanilla_image_content(vanilla_image_content)
@@ -110,9 +111,9 @@ def run():
             break
 
         # Get the action_index either randomly or using predictions of the model
-        input_actions = [0, 0]
+        input_actions = [0] * ACTION_NUM
         if np.random.random() < epsilon:
-            action_index = np.random.choice(2)
+            action_index = np.random.choice(ACTION_NUM)
         else:
             action_index = np.argmax(model.predict_on_batch(accumulated_image_content_before)[0])
         input_actions[action_index] = 1
