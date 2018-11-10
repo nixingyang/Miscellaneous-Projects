@@ -57,6 +57,9 @@ class GameState:
         self.playerFlapAcc =  -9   # players speed on flapping
         self.playerFlapped = False # True when player flaps
 
+        if not hasattr(self, "previous_final_score"):
+            self.previous_final_score = None
+
     def frame_step(self, input_actions):
         pygame.event.pump()
 
@@ -122,6 +125,7 @@ class GameState:
             #SOUNDS['hit'].play()
             #SOUNDS['die'].play()
             terminal = True
+            self.previous_final_score = self.score
             self.__init__()
             reward = -1
 
@@ -144,8 +148,8 @@ class GameState:
         #print self.upperPipes[0]['y'] + PIPE_HEIGHT - int(BASEY * 0.2)
         return np.swapaxes(image_data, 0, 1), reward, terminal
 
-    def get_score(self):
-        return self.score
+    def get_previous_final_score(self):
+        return self.previous_final_score
 
 def getRandomPipe():
     """returns a randomly generated pipe"""
