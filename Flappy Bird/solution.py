@@ -8,6 +8,7 @@ K.set_session(session)
 
 import matplotlib
 matplotlib.use("Agg")
+import pylab
 
 import cv2
 import numpy as np
@@ -40,6 +41,7 @@ OUTPUT_FOLDER_PATH = os.path.abspath(os.path.join(__file__, ".."))
 MODEL_STRUCTURE_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.png")
 MODEL_WEIGHTS_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.h5")
 PREDICTION_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "prediction.mkv")
+SCORE_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "score.png")
 
 def init_model():
     # Define the input tensor
@@ -94,6 +96,7 @@ def run():
     step_index = 0
     best_score = np.NINF
     vanilla_image_content_list = []
+    current_score_list = []
     while True:
         step_index += 1
         perform_training = True
@@ -125,6 +128,7 @@ def run():
         # Save the model if necessary
         if is_crashed:
             current_score = game_state_object.get_previous_final_score()
+            current_score_list.append(current_score)
             if current_score > best_score:
                 print("Best score improved from {} to {} ...".format(best_score, current_score))
                 best_score = current_score
@@ -138,6 +142,16 @@ def run():
                     image_content = cv2.cvtColor(image_content, cv2.COLOR_RGB2BGR)
                     videowriter_object.write(image_content)
                 videowriter_object.release()
+
+                print("Saving score to {} ...".format(SCORE_FILE_PATH))
+                pylab.figure()
+                pylab.plot(np.arange(len(current_score_list)) + 1, current_score_list, marker="o", linestyle="", color="lightskyblue")
+                pylab.grid()
+                pylab.xlabel("Round")
+                pylab.ylabel("Final Score")
+                pylab.savefig(SCORE_FILE_PATH)
+                pylab.close()
+
             vanilla_image_content_list = []
 
         # Get accumulated_image_content_after and append observation
