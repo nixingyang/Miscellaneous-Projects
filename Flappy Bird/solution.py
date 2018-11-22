@@ -170,7 +170,7 @@ def run():
             reward_for_accumulated_image_content_before_array = model.predict_on_batch(accumulated_image_content_before_array)
             reward_for_accumulated_image_content_after_array = model.predict_on_batch(accumulated_image_content_after_array)
             reward_offset = GAMMA * np.max(reward_for_accumulated_image_content_after_array, axis=1) * np.invert(is_crashed_tuple)
-            reward_for_accumulated_image_content_before_array[:, action_index_tuple] = reward_tuple + reward_offset
+            reward_for_accumulated_image_content_before_array[range(BATCH_SIZE), action_index_tuple] = reward_tuple + reward_offset
 
             train_loss = model.train_on_batch(accumulated_image_content_before_array, reward_for_accumulated_image_content_before_array)
             print("train_loss: {:.5f}".format(train_loss))
