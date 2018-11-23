@@ -42,6 +42,7 @@ MODEL_STRUCTURE_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.png")
 MODEL_WEIGHTS_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "model.h5")
 PREDICTION_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "prediction.mkv")
 SCORE_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "score.png")
+SAVE_SCORE_FILE_EVERY_N_ROUNDS = 1000
 
 def init_model():
     # Define the input tensor
@@ -129,7 +130,11 @@ def run():
         if is_crashed:
             current_score = game_state_object.get_previous_final_score()
             current_score_list.append(current_score)
+
+            save_score_file = False
             if current_score > best_score:
+                save_score_file = True
+
                 print("Best score improved from {} to {} ...".format(best_score, current_score))
                 best_score = current_score
 
@@ -143,6 +148,8 @@ def run():
                     videowriter_object.write(image_content)
                 videowriter_object.release()
 
+            save_score_file = save_score_file or len(current_score_list) % SAVE_SCORE_FILE_EVERY_N_ROUNDS == 0
+            if save_score_file:
                 print("Saving score to {} ...".format(SCORE_FILE_PATH))
                 pylab.figure()
                 pylab.plot(np.arange(len(current_score_list)) + 1, current_score_list, marker="o", linestyle="", color="lightskyblue")
