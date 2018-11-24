@@ -116,10 +116,10 @@ def run():
 
         # Get the action_index either randomly or using predictions of the model
         input_actions = [0] * ACTION_NUM
-        if np.random.random() < epsilon:
-            action_index = np.random.choice(ACTION_NUM)
-        else:
+        if perform_training and np.random.random() > epsilon:
             action_index = np.argmax(model.predict_on_batch(accumulated_image_content_before)[0])
+        else:
+            action_index = np.random.choice(ACTION_NUM)
         input_actions[action_index] = 1
 
         # Take actions
