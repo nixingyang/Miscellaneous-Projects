@@ -55,11 +55,13 @@ def change_background(image_path):
 def change_screensaver(image_path):
     change_setting("org.gnome.desktop.screensaver", "picture-uri", format_file_path(image_path))
 
+extract_urlBase = lambda file_name: file_name.split(".")[0].split("_")[1]
+
 def delete_redundant_files(folder_path):
     previous_urlBase_list = []
     file_name_list = sorted(os.listdir(folder_path), key=lambda file_name: int(file_name.split("_")[0]))
     for file_name in file_name_list:
-        urlBase = file_name.split(".")[0].split("_")[1]
+        urlBase = extract_urlBase(file_name)
         if urlBase in previous_urlBase_list:
             os.remove(os.path.join(folder_path, file_name))
         else:
@@ -80,10 +82,15 @@ def run():
             assert has_internet_connection()
 
             # Delete redundant files
-            _ = delete_redundant_files(GALLERY_FOLDER_PATH)
+            previous_urlBase_list = delete_redundant_files(GALLERY_FOLDER_PATH)
 
             # Iterate over image detail
             for image_index, (image_name, image_URL) in enumerate(yield_image_detail()):
+                # Skip if the same image has already been downloaded
+                urlBase = extract_urlBase(image_name)
+                if urlBase in previous_urlBase_list:
+                    continue
+
                 # Download the image
                 image_path = os.path.join(GALLERY_FOLDER_PATH, image_name)
                 if not os.path.isfile(image_path):
