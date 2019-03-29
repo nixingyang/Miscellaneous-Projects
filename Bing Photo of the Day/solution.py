@@ -36,9 +36,8 @@ def yield_image_detail():
 
             # Get the image detail
             for image_metadata in image_metadata_list:
-                image_name = "{}_{}.jpg".format(image_metadata.find("startdate").text, image_metadata.find("urlBase").text.split("/")[-1].split("_")[0])
+                image_name = "{}_{}.jpg".format(image_metadata.find("startdate").text, image_metadata.find("urlBase").text.split("/")[-1].split("_")[0].split(".")[-1])
                 image_URL = "https://www.bing.com{}_{}.jpg".format(image_metadata.find("urlBase").text, SCREEN_RESOLUTION)
-
                 yield image_name, image_URL
 
 def format_file_path(file_path):
