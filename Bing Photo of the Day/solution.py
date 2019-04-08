@@ -85,14 +85,10 @@ def run():
 
             # Iterate over image detail
             for image_index, (image_name, image_URL) in enumerate(yield_image_detail()):
-                # Skip if the same image has already been downloaded
+                # Download the image if necessary
                 urlBase = extract_urlBase(image_name)
-                if urlBase in previous_urlBase_list:
-                    continue
-
-                # Download the image
                 image_path = os.path.join(GALLERY_FOLDER_PATH, image_name)
-                if not os.path.isfile(image_path):
+                if urlBase not in previous_urlBase_list and not os.path.isfile(image_path):
                     urlretrieve(image_URL, image_path)
                 assert os.path.isfile(image_path)
 
