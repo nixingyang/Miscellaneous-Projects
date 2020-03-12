@@ -20,7 +20,8 @@ from keras.utils import plot_model
 
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(__file__, "../external_resources/game")))
+sys.path.append(
+    os.path.abspath(os.path.join(__file__, "../external_resources/game")))
 from wrapped_flappy_bird import GameState  # @UnresolvedImport pylint: disable=import-error
 
 # Properties of frames
@@ -44,6 +45,7 @@ PREDICTION_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "prediction.mkv")
 SCORE_FILE_PATH = os.path.join(OUTPUT_FOLDER_PATH, "score.png")
 SAVE_SCORE_FILE_EVERY_N_ROUNDS = 1000
 
+
 def init_model():
     # Define the input tensor
     input_tensor = Input((FRAME_HEIGHT, FRAME_WIDTH, ACCUMULATED_FRAME_NUM))
@@ -51,7 +53,10 @@ def init_model():
     # Get the output tensor
     output_tensor = input_tensor
     for block_index in np.arange(4) + 1:
-        output_tensor = Conv2D(filters=64 * block_index, kernel_size=5, strides=2, padding="same")(output_tensor)
+        output_tensor = Conv2D(filters=64 * block_index,
+                               kernel_size=5,
+                               strides=2,
+                               padding="same")(output_tensor)
         output_tensor = Activation("relu")(output_tensor)
     output_tensor = GlobalAveragePooling2D()(output_tensor)
     output_tensor = Dense(ACTION_NUM)(output_tensor)
@@ -60,24 +65,37 @@ def init_model():
     model = Model(input_tensor, output_tensor)
     model.compile(loss="mean_squared_error", optimizer=Adam(lr=LEARNING_RATE))
     model.summary()
-    plot_model(model, to_file=MODEL_STRUCTURE_FILE_PATH, show_shapes=True, show_layer_names=True)
+    plot_model(model,
+               to_file=MODEL_STRUCTURE_FILE_PATH,
+               show_shapes=True,
+               show_layer_names=True)
     return model
 
+
 def process_vanilla_image_content(vanilla_image_content):
-    processed_image_content = cv2.cvtColor(vanilla_image_content, cv2.COLOR_RGB2GRAY)
-    processed_image_content = cv2.resize(processed_image_content, (FRAME_WIDTH, FRAME_HEIGHT))
+    processed_image_content = cv2.cvtColor(vanilla_image_content,
+                                           cv2.COLOR_RGB2GRAY)
+    processed_image_content = cv2.resize(processed_image_content,
+                                         (FRAME_WIDTH, FRAME_HEIGHT))
     processed_image_content = processed_image_content > 0
     return processed_image_content
 
+
 def reset_on_failure(game_state_object):
     # Take a dummy action at the beginning
-    vanilla_image_content, _, _ = game_state_object.frame_step(input_actions=[1] + [0] * (ACTION_NUM - 1))
+    vanilla_image_content, _, _ = game_state_object.frame_step(
+        input_actions=[1] + [0] * (ACTION_NUM - 1))
 
     # Get a dummy accumulated_image_content_before
-    processed_image_content = process_vanilla_image_content(vanilla_image_content)
-    accumulated_image_content_before = np.stack([processed_image_content] * ACCUMULATED_FRAME_NUM, axis=-1)
-    accumulated_image_content_before = np.expand_dims(accumulated_image_content_before, axis=0)
+    processed_image_content = process_vanilla_image_content(
+        vanilla_image_content)
+    accumulated_image_content_before = np.stack([processed_image_content] *
+                                                ACCUMULATED_FRAME_NUM,
+                                                axis=-1)
+    accumulated_image_content_before = np.expand_dims(
+        accumulated_image_content_before, axis=0)
     return accumulated_image_content_before
+
 
 def run():
     print("Outputs will be saved to {} ...".format(OUTPUT_FOLDER_PATH))
@@ -106,10 +124,15 @@ def run():
             epsilon = INITIAL_EPSILON
             perform_training = False
         elif step_index <= OBSERVE_STEP_NUM + EXPLORE_STEP_NUM:
-            print("explore {}/{}".format(step_index - OBSERVE_STEP_NUM, EXPLORE_STEP_NUM))
-            epsilon = FINAL_EPSILON + 1.0 * (OBSERVE_STEP_NUM + EXPLORE_STEP_NUM - step_index) / EXPLORE_STEP_NUM * (INITIAL_EPSILON - FINAL_EPSILON)
+            print("explore {}/{}".format(step_index - OBSERVE_STEP_NUM,
+                                         EXPLORE_STEP_NUM))
+            epsilon = FINAL_EPSILON + 1.0 * (
+                OBSERVE_STEP_NUM + EXPLORE_STEP_NUM - step_index
+            ) / EXPLORE_STEP_NUM * (INITIAL_EPSILON - FINAL_EPSILON)
         elif step_index <= OBSERVE_STEP_NUM + EXPLORE_STEP_NUM + TRAIN_STEP_NUM:
-            print("train {}/{}".format(step_index - OBSERVE_STEP_NUM - EXPLORE_STEP_NUM, TRAIN_STEP_NUM))
+            print("train {}/{}".format(
+                step_index - OBSERVE_STEP_NUM - EXPLORE_STEP_NUM,
+                TRAIN_STEP_NUM))
             epsilon = FINAL_EPSILON
         else:
             break
@@ -117,13 +140,15 @@ def run():
         # Get the action_index either randomly or using predictions of the model
         input_actions = [0] * ACTION_NUM
         if perform_training and np.random.random() > epsilon:
-            action_index = np.argmax(model.predict_on_batch(accumulated_image_content_before)[0])
+            action_index = np.argmax(
+                model.predict_on_batch(accumulated_image_content_before)[0])
         else:
             action_index = np.random.choice(ACTION_NUM)
         input_actions[action_index] = 1
 
         # Take actions
-        vanilla_image_content, reward, is_crashed = game_state_object.frame_step(input_actions=input_actions)
+        vanilla_image_content, reward, is_crashed = game_state_object.frame_step(
+            input_actions=input_actions)
         vanilla_image_content_list.append(vanilla_image_content)
 
         # Save the model if necessary
@@ -135,24 +160,36 @@ def run():
             if current_score > best_score:
                 save_score_file = True
 
-                print("Best score improved from {} to {} ...".format(best_score, current_score))
+                print("Best score improved from {} to {} ...".format(
+                    best_score, current_score))
                 best_score = current_score
 
                 print("Saving model to {} ...".format(MODEL_WEIGHTS_FILE_PATH))
-                model.save(filepath=MODEL_WEIGHTS_FILE_PATH, overwrite=True, include_optimizer=True)
+                model.save(filepath=MODEL_WEIGHTS_FILE_PATH,
+                           overwrite=True,
+                           include_optimizer=True)
 
-                print("Saving prediction to {} ...".format(PREDICTION_FILE_PATH))
-                videowriter_object = cv2.VideoWriter(PREDICTION_FILE_PATH, cv2.VideoWriter_fourcc(*"X264"), 20.0, vanilla_image_content.shape[:-1][::-1])
+                print(
+                    "Saving prediction to {} ...".format(PREDICTION_FILE_PATH))
+                videowriter_object = cv2.VideoWriter(
+                    PREDICTION_FILE_PATH, cv2.VideoWriter_fourcc(*"X264"), 20.0,
+                    vanilla_image_content.shape[:-1][::-1])
                 for image_content in vanilla_image_content_list:
-                    image_content = cv2.cvtColor(image_content, cv2.COLOR_RGB2BGR)
+                    image_content = cv2.cvtColor(image_content,
+                                                 cv2.COLOR_RGB2BGR)
                     videowriter_object.write(image_content)
                 videowriter_object.release()
 
-            save_score_file = save_score_file or len(current_score_list) % SAVE_SCORE_FILE_EVERY_N_ROUNDS == 0
+            save_score_file = save_score_file or len(
+                current_score_list) % SAVE_SCORE_FILE_EVERY_N_ROUNDS == 0
             if save_score_file:
                 print("Saving score to {} ...".format(SCORE_FILE_PATH))
                 pylab.figure()
-                pylab.plot(np.arange(len(current_score_list)) + 1, current_score_list, marker="o", linestyle="", color="lightskyblue")
+                pylab.plot(np.arange(len(current_score_list)) + 1,
+                           current_score_list,
+                           marker="o",
+                           linestyle="",
+                           color="lightskyblue")
                 pylab.grid()
                 pylab.xlabel("Round")
                 pylab.ylabel("Final Score")
@@ -162,33 +199,55 @@ def run():
             vanilla_image_content_list = []
 
         # Get accumulated_image_content_after and append observation
-        processed_image_content = process_vanilla_image_content(vanilla_image_content)
-        accumulated_image_content_after = np.append(accumulated_image_content_before[:, :, :, 1:], np.expand_dims(np.expand_dims(processed_image_content, axis=-1), axis=0), axis=-1)
-        sample = (accumulated_image_content_before, action_index, accumulated_image_content_after, reward, is_crashed)
+        processed_image_content = process_vanilla_image_content(
+            vanilla_image_content)
+        accumulated_image_content_after = np.append(
+            accumulated_image_content_before[:, :, :, 1:],
+            np.expand_dims(np.expand_dims(processed_image_content, axis=-1),
+                           axis=0),
+            axis=-1)
+        sample = (accumulated_image_content_before, action_index,
+                  accumulated_image_content_after, reward, is_crashed)
         sample_container.append(sample)
 
         # Perform training
         if perform_training:
-            chosen_sample_list = [sample_container[index] for index in np.random.choice(len(sample_container), size=BATCH_SIZE)]
-            accumulated_image_content_before_tuple, action_index_tuple, accumulated_image_content_after_tuple, reward_tuple, is_crashed_tuple = zip(*chosen_sample_list)
-            accumulated_image_content_before_array = np.concatenate(accumulated_image_content_before_tuple)
-            accumulated_image_content_after_array = np.concatenate(accumulated_image_content_after_tuple)
+            chosen_sample_list = [
+                sample_container[index]
+                for index in np.random.choice(len(sample_container),
+                                              size=BATCH_SIZE)
+            ]
+            accumulated_image_content_before_tuple, action_index_tuple, accumulated_image_content_after_tuple, reward_tuple, is_crashed_tuple = zip(
+                *chosen_sample_list)
+            accumulated_image_content_before_array = np.concatenate(
+                accumulated_image_content_before_tuple)
+            accumulated_image_content_after_array = np.concatenate(
+                accumulated_image_content_after_tuple)
 
-            reward_for_accumulated_image_content_before_array = model.predict_on_batch(accumulated_image_content_before_array)
-            reward_for_accumulated_image_content_after_array = model.predict_on_batch(accumulated_image_content_after_array)
-            reward_offset = GAMMA * np.max(reward_for_accumulated_image_content_after_array, axis=1) * np.invert(is_crashed_tuple)
-            reward_for_accumulated_image_content_before_array[range(BATCH_SIZE), action_index_tuple] = reward_tuple + reward_offset
+            reward_for_accumulated_image_content_before_array = model.predict_on_batch(
+                accumulated_image_content_before_array)
+            reward_for_accumulated_image_content_after_array = model.predict_on_batch(
+                accumulated_image_content_after_array)
+            reward_offset = GAMMA * np.max(
+                reward_for_accumulated_image_content_after_array,
+                axis=1) * np.invert(is_crashed_tuple)
+            reward_for_accumulated_image_content_before_array[range(
+                BATCH_SIZE), action_index_tuple] = reward_tuple + reward_offset
 
-            train_loss = model.train_on_batch(accumulated_image_content_before_array, reward_for_accumulated_image_content_before_array)
+            train_loss = model.train_on_batch(
+                accumulated_image_content_before_array,
+                reward_for_accumulated_image_content_before_array)
             print("train_loss: {:.5f}".format(train_loss))
 
         # Update accumulated_image_content_before
         if is_crashed:
-            accumulated_image_content_before = reset_on_failure(game_state_object)
+            accumulated_image_content_before = reset_on_failure(
+                game_state_object)
         else:
             accumulated_image_content_before = accumulated_image_content_after
 
     print("All done!")
+
 
 if __name__ == "__main__":
     run()

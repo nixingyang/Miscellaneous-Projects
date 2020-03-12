@@ -4,16 +4,19 @@ import pygame
 
 ASSETS_FOLDER_PATH = os.path.abspath(os.path.join(__file__, '../../assets'))
 
+
 def load():
     # path of player with different states
-    PLAYER_PATH = (
-            os.path.join(ASSETS_FOLDER_PATH, 'sprites/redbird-upflap.png'),
-            os.path.join(ASSETS_FOLDER_PATH, 'sprites/redbird-midflap.png'),
-            os.path.join(ASSETS_FOLDER_PATH, 'sprites/redbird-downflap.png')
-    )
+    PLAYER_PATH = (os.path.join(ASSETS_FOLDER_PATH,
+                                'sprites/redbird-upflap.png'),
+                   os.path.join(ASSETS_FOLDER_PATH,
+                                'sprites/redbird-midflap.png'),
+                   os.path.join(ASSETS_FOLDER_PATH,
+                                'sprites/redbird-downflap.png'))
 
     # path of background
-    BACKGROUND_PATH = os.path.join(ASSETS_FOLDER_PATH, 'sprites/background-black.png')
+    BACKGROUND_PATH = os.path.join(ASSETS_FOLDER_PATH,
+                                   'sprites/background-black.png')
 
     # path of pipe
     PIPE_PATH = os.path.join(ASSETS_FOLDER_PATH, 'sprites/pipe-green.png')
@@ -22,20 +25,30 @@ def load():
 
     # numbers sprites for score display
     IMAGES['numbers'] = (
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/0.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/1.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/2.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/3.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/4.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/5.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/6.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/7.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/8.png')).convert_alpha(),
-        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/9.png')).convert_alpha()
-    )
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/0.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/1.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/2.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/3.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/4.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/5.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/6.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/7.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/8.png')).convert_alpha(),
+        pygame.image.load(os.path.join(ASSETS_FOLDER_PATH,
+                                       'sprites/9.png')).convert_alpha())
 
     # base (ground) sprite
-    IMAGES['base'] = pygame.image.load(os.path.join(ASSETS_FOLDER_PATH, 'sprites/base.png')).convert_alpha()
+    IMAGES['base'] = pygame.image.load(
+        os.path.join(ASSETS_FOLDER_PATH, 'sprites/base.png')).convert_alpha()
 
     # sounds
     if 'win' in sys.platform:
@@ -43,11 +56,16 @@ def load():
     else:
         soundExt = '.ogg'
 
-    SOUNDS['die'] = pygame.mixer.Sound(os.path.join(ASSETS_FOLDER_PATH, 'audio/die') + soundExt)
-    SOUNDS['hit'] = pygame.mixer.Sound(os.path.join(ASSETS_FOLDER_PATH, 'audio/hit') + soundExt)
-    SOUNDS['point'] = pygame.mixer.Sound(os.path.join(ASSETS_FOLDER_PATH, 'audio/point') + soundExt)
-    SOUNDS['swoosh'] = pygame.mixer.Sound(os.path.join(ASSETS_FOLDER_PATH, 'audio/swoosh') + soundExt)
-    SOUNDS['wing'] = pygame.mixer.Sound(os.path.join(ASSETS_FOLDER_PATH, 'audio/wing') + soundExt)
+    SOUNDS['die'] = pygame.mixer.Sound(
+        os.path.join(ASSETS_FOLDER_PATH, 'audio/die') + soundExt)
+    SOUNDS['hit'] = pygame.mixer.Sound(
+        os.path.join(ASSETS_FOLDER_PATH, 'audio/hit') + soundExt)
+    SOUNDS['point'] = pygame.mixer.Sound(
+        os.path.join(ASSETS_FOLDER_PATH, 'audio/point') + soundExt)
+    SOUNDS['swoosh'] = pygame.mixer.Sound(
+        os.path.join(ASSETS_FOLDER_PATH, 'audio/swoosh') + soundExt)
+    SOUNDS['wing'] = pygame.mixer.Sound(
+        os.path.join(ASSETS_FOLDER_PATH, 'audio/wing') + soundExt)
 
     # select random background sprites
     IMAGES['background'] = pygame.image.load(BACKGROUND_PATH).convert()
@@ -80,6 +98,7 @@ def load():
     )
 
     return IMAGES, SOUNDS, HITMASKS
+
 
 def getHitmask(image):
     """returns a hitmask using an image's alpha."""
