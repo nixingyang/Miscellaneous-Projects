@@ -4,3 +4,8 @@
 ```plaintext
 comm -23 <(pacman -Qqtt | sort) <(pacman -Qqg base-devel | sort | uniq)
 ```
+
+#### Remove unused packages recursively
+```plaintext
+sudo pacman -Rns $(pacman -Qttdq)
+```
