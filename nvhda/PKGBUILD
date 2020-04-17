@@ -8,15 +8,14 @@ pkgdesc="Kernel driver to dynamically enable/disable NVIDIA HDMI audio output in
 arch=('x86_64')
 url="https://github.com/dickmao/nvhda"
 license=('GPL')
-depends=('linux' 'dkms')
-makedepends=('linux-headers')
-_extramodules=extramodules-ARCH
+depends=('linux-lts' 'dkms')
+makedepends=('linux-lts-headers')
 source=("git+https://github.com/dickmao/nvhda.git")
 md5sums=('SKIP')
 
 build() {
   cd ${pkgbase}
-  _kernver="$(cat /usr/lib/modules/${_extramodules}/version)"
+  _kernver=`uname -r`
   make KDIR=/lib/modules/${_kernver}/build
 }
 
