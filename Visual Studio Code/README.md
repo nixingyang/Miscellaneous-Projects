@@ -7,15 +7,6 @@
 "workbench.editor.enablePreviewFromQuickOpen": false
 ```
 
-#### Import TensorFlow
-```plaintext
-# https://github.com/microsoft/python-language-server/issues/818
-# https://github.com/tensorflow/tensorflow/issues/32982#issuecomment-545414061
-mkdir ~/.local/dummy-site-packages
-ln -s ~/.miniconda3/envs/TensorFlow/lib/python3.7/site-packages/tensorflow_core ~/.local/dummy-site-packages/tensorflow
-"python.autoComplete.extraPaths": ["/home/xingyang/.local/dummy-site-packages"]
-```
-
 #### Breakpoint in file excluded by filters
 ```plaintext
 cat .vscode/launch.json
