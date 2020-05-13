@@ -45,9 +45,6 @@ cat ~/.config/Code\ -\ OSS/User/settings.json
     ],
     "editor.formatOnSave": true,
     "python.formatting.yapfPath": "/home/xingyang/.miniconda3/envs/TensorFlow/bin/yapf",
-    "python.autoComplete.extraPaths": [
-        "/home/xingyang/.local/dummy-site-packages"
-    ],
     "debug.console.fontFamily": "'Noto Sans'",
     "workbench.editor.enablePreviewFromQuickOpen": false,
     "workbench.editor.enablePreview": false,
