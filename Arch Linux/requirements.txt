@@ -37,7 +37,7 @@ noto-fonts-emoji
 ntfs-3g
 nvidia-dkms
 p7zip
-paper-icon-theme-git
+papirus-icon-theme
 qbittorrent
 smartgit
 spotify
