@@ -8,7 +8,7 @@
 ```
 
 #### Breakpoint in file excluded by filters
-```plaintext
+```bash
 cat .vscode/launch.json
 {
     // Use IntelliSense to learn about possible attributes.
@@ -29,7 +29,7 @@ cat .vscode/launch.json
 ```
 
 #### User/settings.json
-```plaintext
+```bash
 cat ~/.config/Code\ -\ OSS/User/settings.json
 {
     "telemetry.enableCrashReporter": false,
