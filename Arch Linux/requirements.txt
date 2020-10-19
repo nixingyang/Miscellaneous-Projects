@@ -30,7 +30,7 @@ linux-lts-headers
 meld
 mendeleydesktop-bundled
 nautilus
-networkmanager-pptp
+networkmanager-openvpn
 nordvpn-bin
 noto-fonts
 noto-fonts-emoji
