@@ -10,6 +10,10 @@ flags.DEFINE_string("root_folder_path",
 flags.DEFINE_string("author", "nixingyang", "Author.")
 flags.DEFINE_string("start_date", "2020-03-01", "Start date.")
 flags.DEFINE_string("end_date", "2020-06-30", "End date.")
+flags.DEFINE_string(
+    "holiday_dates",
+    "2020-01-06 2020-04-10 2020-04-13 2020-05-01 2020-05-21 2020-06-19 2020-12-24 2020-12-25",
+    "Holiday dates.")
 flags.DEFINE_string("hours", "7,35", "Working hours.")
 FLAGS = flags.FLAGS
 
@@ -27,6 +31,9 @@ def main(_):
         *[int(item) for item in input_date.split("-")])
     start_datetime = init_datetime(FLAGS.start_date)
     end_datetime = init_datetime(FLAGS.end_date)
+    holiday_datetime_list = [
+        init_datetime(item) for item in FLAGS.holiday_dates.split(" ")
+    ]
 
     current_datetime = start_datetime
     while current_datetime <= end_datetime:
