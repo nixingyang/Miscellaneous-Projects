@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from absl import app, flags
@@ -19,6 +20,12 @@ def main(_):
         repository_folder_path = os.path.join(FLAGS.root_folder_path, item)
         if os.path.isdir(repository_folder_path):
             repository_folder_path_list.append(repository_folder_path)
+
+    # Initialize datetime
+    init_datetime = lambda input_date: datetime.datetime(
+        *[int(item) for item in input_date.split("-")])
+    start_datetime = init_datetime(FLAGS.start_date)
+    end_datetime = init_datetime(FLAGS.end_date)
 
     print("All done!")
 
