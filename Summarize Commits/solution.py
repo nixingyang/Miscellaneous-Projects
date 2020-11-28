@@ -35,6 +35,9 @@ def merge_commit_messages(commit_message_list,
     # Merge entries
     commit_messages = "; ".join(sorted(commit_message_list))
 
+    # Replace ".;" with ";"
+    commit_messages = commit_messages.replace(".;", ";")
+
     return commit_messages
 
 
