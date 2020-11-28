@@ -46,6 +46,10 @@ def main(_):
             if len(output) > 0:
                 commit_message_list += output.split("\n")
 
+        # Check whether it is a working day
+        is_working_day = current_datetime.weekday(
+        ) <= 4 and current_datetime not in holiday_datetime_list
+
         # Get the next day
         # https://stackoverflow.com/a/3240486
         current_datetime += datetime.timedelta(days=1)
