@@ -79,7 +79,7 @@ def main(_):
                 commit_messages = FLAGS.dummy_task
             data_frame = data_frame.append(pd.Series([
                 list(calendar.day_abbr)[current_datetime.weekday()],
-                f"{current_datetime.day}-{current_datetime.month}-{current_datetime.year}",
+                f"{current_datetime.day}.{current_datetime.month}.{current_datetime.year}",
                 FLAGS.hours, commit_messages
             ],
                                                      index=data_frame.columns),
