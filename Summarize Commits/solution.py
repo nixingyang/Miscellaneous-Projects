@@ -27,6 +27,12 @@ def main(_):
     start_datetime = init_datetime(FLAGS.start_date)
     end_datetime = init_datetime(FLAGS.end_date)
 
+    current_datetime = start_datetime
+    while current_datetime <= end_datetime:
+        # Get the next day
+        # https://stackoverflow.com/a/3240486
+        current_datetime += datetime.timedelta(days=1)
+
     print("All done!")
 
 
