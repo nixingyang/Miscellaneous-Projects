@@ -77,6 +77,10 @@ def main(_):
         # https://stackoverflow.com/a/3240486
         current_datetime += datetime.timedelta(days=1)
 
+    # Save the Excel sheet
+    with pd.ExcelWriter(f"{FLAGS.start_date} {FLAGS.end_date}.xlsx") as writer:  # pylint: disable=abstract-class-instantiated
+        data_frame.to_excel(writer, index=False)
+
     print("All done!")
 
 
