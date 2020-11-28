@@ -17,6 +17,7 @@ flags.DEFINE_string(
     "2020-01-06 2020-04-10 2020-04-13 2020-05-01 2020-05-21 2020-06-19 2020-12-24 2020-12-25",
     "Holiday dates.")
 flags.DEFINE_string("hours", "7,35", "Working hours.")
+flags.DEFINE_string("dummy_task", "TBD", "Dummy value for the task.")
 FLAGS = flags.FLAGS
 
 
@@ -68,7 +69,7 @@ def main(_):
         data_frame = data_frame.append(pd.Series([
             list(calendar.day_abbr)[current_datetime.weekday()],
             f"{current_datetime.day}-{current_datetime.month}-{current_datetime.year}",
-            FLAGS.hours, "TBD"
+            FLAGS.hours, FLAGS.dummy_task
         ],
                                                  index=data_frame.columns),
                                        ignore_index=True)
