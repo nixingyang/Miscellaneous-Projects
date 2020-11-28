@@ -49,6 +49,7 @@ def main(_):
     ]
 
     data_frame = pd.DataFrame(columns=["Day", "Date", "Hours", "Task"])
+    extra_commit_messages = []
     current_datetime = start_datetime
     while current_datetime <= end_datetime:
         date = f"{current_datetime.year}-{current_datetime.month}-{current_datetime.day}"
@@ -76,6 +77,8 @@ def main(_):
             ],
                                                      index=data_frame.columns),
                                            ignore_index=True)
+        elif len(commit_messages) > 0:
+            extra_commit_messages.append(commit_messages)
 
         # Get the next day
         # https://stackoverflow.com/a/3240486
