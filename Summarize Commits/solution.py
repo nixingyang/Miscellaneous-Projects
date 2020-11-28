@@ -1,7 +1,9 @@
+import calendar
 import datetime
 import os
 import subprocess
 
+import pandas as pd
 from absl import app, flags
 
 flags.DEFINE_string("root_folder_path",
@@ -45,6 +47,7 @@ def main(_):
         init_datetime(item) for item in FLAGS.holiday_dates.split(" ")
     ]
 
+    data_frame = pd.DataFrame(columns=["Day", "Date", "Hours", "Task"])
     current_datetime = start_datetime
     while current_datetime <= end_datetime:
         date = f"{current_datetime.year}-{current_datetime.month}-{current_datetime.day}"
@@ -60,6 +63,15 @@ def main(_):
         # Check whether it is a working day
         is_working_day = current_datetime.weekday(
         ) <= 4 and current_datetime not in holiday_datetime_list
+
+        # Add record to the data frame
+        data_frame = data_frame.append(pd.Series([
+            list(calendar.day_abbr)[current_datetime.weekday()],
+            f"{current_datetime.day}-{current_datetime.month}-{current_datetime.year}",
+            FLAGS.hours, "TBD"
+        ],
+                                                 index=data_frame.columns),
+                                       ignore_index=True)
 
         # Get the next day
         # https://stackoverflow.com/a/3240486
