@@ -91,6 +91,12 @@ def main(_):
         # https://stackoverflow.com/a/3240486
         current_datetime += datetime.timedelta(days=1)
 
+    # Fill in the records with dummy task
+    dummy_task_indexes = data_frame.index[data_frame["Task"] ==
+                                          FLAGS.dummy_task].tolist()
+    for index, value in zip(dummy_task_indexes, extra_commit_messages):
+        data_frame.loc[index, "Task"] = value
+
     # Save the Excel sheet
     with pd.ExcelWriter(f"{FLAGS.start_date} {FLAGS.end_date}.xlsx") as writer:  # pylint: disable=abstract-class-instantiated
         data_frame.to_excel(writer, index=False)
