@@ -22,7 +22,8 @@ FLAGS = flags.FLAGS
 
 
 def merge_commit_messages(commit_message_list,
-                          skipped_keywords=["Merge", "Revert"]):
+                          skipped_keywords=["Merge", "Revert"],
+                          max_commit_messages=5):
     # Remove duplicate entries, and sort them
     commit_message_list = sorted(set(commit_message_list))
 
@@ -32,11 +33,23 @@ def merge_commit_messages(commit_message_list,
         if sum([item.startswith(keyword) for keyword in skipped_keywords]) == 0
     ]
 
-    # Merge entries
-    commit_messages = "; ".join(sorted(commit_message_list))
+    commit_messages = []
+    start_index = 0
+    while start_index < len(commit_message_list):
+        # Get current trunk
+        entries = commit_message_list[start_index:start_index +
+                                      max_commit_messages]
 
-    # Replace ".;" with ";"
-    commit_messages = commit_messages.replace(".;", ";")
+        # Merge entries
+        commit_message = "; ".join(sorted(entries))
+
+        # Replace ".;" with ";"
+        commit_message = commit_message.replace(".;", ";")
+
+        # Add entries
+        commit_messages.append(commit_message)
+
+        start_index += max_commit_messages
 
     return commit_messages
 
@@ -79,16 +92,18 @@ def main(_):
         # Add record to the data frame
         if is_working_day:
             if len(commit_messages) == 0:
-                commit_messages = FLAGS.dummy_task
+                commit_messages = [FLAGS.dummy_task]
             data_frame = data_frame.append(pd.Series([
                 list(calendar.day_abbr)[current_datetime.weekday()],
                 f"{current_datetime.day}.{current_datetime.month}.{current_datetime.year}",
-                FLAGS.hours, commit_messages
+                FLAGS.hours, commit_messages[0]
             ],
                                                      index=data_frame.columns),
                                            ignore_index=True)
+            if len(commit_messages) > 1:
+                extra_commit_messages += commit_messages[1:]
         elif len(commit_messages) > 0:
-            extra_commit_messages.append(commit_messages)
+            extra_commit_messages += commit_messages
 
         # Get the next day
         # https://stackoverflow.com/a/3240486
