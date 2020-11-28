@@ -1,5 +1,6 @@
 import datetime
 import os
+import subprocess
 
 from absl import app, flags
 
@@ -29,6 +30,15 @@ def main(_):
 
     current_datetime = start_datetime
     while current_datetime <= end_datetime:
+        date = f"{current_datetime.year}-{current_datetime.month}-{current_datetime.day}"
+        commit_message_list = []
+        for repository_folder_path in repository_folder_path_list:
+            # Retrieve commit messages
+            command = f"cd \"{repository_folder_path}\"; git log --pretty=format:\"%s\" --all --author=nixingyang --after=\"{date} 00:00\" --before=\"{date} 23:59\""
+            output = subprocess.check_output(command, shell=True, text=True)
+            if len(output) > 0:
+                commit_message_list += output.split("\n")
+
         # Get the next day
         # https://stackoverflow.com/a/3240486
         current_datetime += datetime.timedelta(days=1)
