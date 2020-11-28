@@ -18,6 +18,16 @@ flags.DEFINE_string("hours", "7,35", "Working hours.")
 FLAGS = flags.FLAGS
 
 
+def merge_commit_messages(commit_message_list):
+    # Remove duplicate entries, and sort them
+    commit_message_list = sorted(set(commit_message_list))
+
+    # Merge entries
+    commit_messages = "; ".join(sorted(commit_message_list))
+
+    return commit_messages
+
+
 def main(_):
     # Get the folder path of all repositories
     repository_folder_path_list = []
@@ -45,6 +55,7 @@ def main(_):
             output = subprocess.check_output(command, shell=True, text=True)
             if len(output) > 0:
                 commit_message_list += output.split("\n")
+        commit_messages = merge_commit_messages(commit_message_list)
 
         # Check whether it is a working day
         is_working_day = current_datetime.weekday(
