@@ -21,9 +21,16 @@ flags.DEFINE_string("dummy_task", "TBD", "Dummy value for the task.")
 FLAGS = flags.FLAGS
 
 
-def merge_commit_messages(commit_message_list):
+def merge_commit_messages(commit_message_list,
+                          skipped_keywords=["Merge", "Revert"]):
     # Remove duplicate entries, and sort them
     commit_message_list = sorted(set(commit_message_list))
+
+    # Skip commit messages which start with certain keywords
+    commit_message_list = [
+        item for item in commit_message_list
+        if sum([item.startswith(keyword) for keyword in skipped_keywords]) == 0
+    ]
 
     # Merge entries
     commit_messages = "; ".join(sorted(commit_message_list))
