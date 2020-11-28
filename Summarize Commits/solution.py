@@ -66,13 +66,16 @@ def main(_):
         ) <= 4 and current_datetime not in holiday_datetime_list
 
         # Add record to the data frame
-        data_frame = data_frame.append(pd.Series([
-            list(calendar.day_abbr)[current_datetime.weekday()],
-            f"{current_datetime.day}-{current_datetime.month}-{current_datetime.year}",
-            FLAGS.hours, FLAGS.dummy_task
-        ],
-                                                 index=data_frame.columns),
-                                       ignore_index=True)
+        if is_working_day:
+            if len(commit_messages) == 0:
+                commit_messages = FLAGS.dummy_task
+            data_frame = data_frame.append(pd.Series([
+                list(calendar.day_abbr)[current_datetime.weekday()],
+                f"{current_datetime.day}-{current_datetime.month}-{current_datetime.year}",
+                FLAGS.hours, commit_messages
+            ],
+                                                     index=data_frame.columns),
+                                           ignore_index=True)
 
         # Get the next day
         # https://stackoverflow.com/a/3240486
