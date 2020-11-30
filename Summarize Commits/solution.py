@@ -119,6 +119,7 @@ def main(_):
         data_frame.loc[index, "Task"] = value
 
     # Save the Excel sheet
+    assert data_frame["Task"].duplicated().sum() == 0
     with pd.ExcelWriter(f"{FLAGS.start_date} {FLAGS.end_date}.xlsx") as writer:  # pylint: disable=abstract-class-instantiated
         data_frame.to_excel(writer, index=False)
 
