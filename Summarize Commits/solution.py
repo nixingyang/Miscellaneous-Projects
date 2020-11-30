@@ -122,6 +122,14 @@ def main(_):
     with pd.ExcelWriter(f"{FLAGS.start_date} {FLAGS.end_date}.xlsx") as writer:  # pylint: disable=abstract-class-instantiated
         data_frame.to_excel(writer, index=False)
 
+    # Save the remaining commit messages
+    remaining_commit_messages = extra_commit_messages[len(dummy_task_indexes):]
+    if len(remaining_commit_messages) > 0:
+        with open(f"{FLAGS.start_date} {FLAGS.end_date}.txt",
+                  "w") as file_object:
+            for commit_message in remaining_commit_messages:
+                file_object.write(f"{commit_message}\n")
+
     print("All done!")
 
 
