@@ -117,18 +117,18 @@ def main(_):
                                           FLAGS.dummy_task].tolist()
     for index, value in zip(dummy_task_indexes, extra_commit_messages):
         data_frame.loc[index, "Task"] = value
+    extra_commit_messages = extra_commit_messages[len(dummy_task_indexes):]
 
     # Save the Excel sheet
     assert data_frame["Task"].duplicated().sum() == 0
     with pd.ExcelWriter(f"{FLAGS.start_date} {FLAGS.end_date}.xlsx") as writer:  # pylint: disable=abstract-class-instantiated
         data_frame.to_excel(writer, index=False)
 
-    # Save the remaining commit messages
-    remaining_commit_messages = extra_commit_messages[len(dummy_task_indexes):]
-    if len(remaining_commit_messages) > 0:
+    # Save the remaining unused commit messages
+    if len(extra_commit_messages) > 0:
         with open(f"{FLAGS.start_date} {FLAGS.end_date}.txt",
                   "w") as file_object:
-            for commit_message in remaining_commit_messages:
+            for commit_message in extra_commit_messages:
                 file_object.write(f"{commit_message}\n")
 
     print("All done!")
