@@ -9,6 +9,8 @@ from absl import app, flags
 flags.DEFINE_string("root_folder_path",
                     os.path.expanduser("~/Documents/Local Storage/Source Code"),
                     "Path of the root folder.")
+flags.DEFINE_list("skipped_folder_names", "Miscellaneous Projects,PhD",
+                  "Skipped folder names.")
 flags.DEFINE_string("author", "nixingyang", "Author.")
 flags.DEFINE_string("start_date", "2020-03-01", "Start date.")
 flags.DEFINE_string("end_date", "2020-06-30", "End date.")
@@ -59,7 +61,8 @@ def main(_):
     repository_folder_path_list = []
     for item in sorted(os.listdir(FLAGS.root_folder_path)):
         repository_folder_path = os.path.join(FLAGS.root_folder_path, item)
-        if os.path.isdir(repository_folder_path):
+        if os.path.isdir(repository_folder_path) and not os.path.basename(
+                repository_folder_path) in FLAGS.skipped_folder_names:
             repository_folder_path_list.append(repository_folder_path)
 
     # Initialize datetime
