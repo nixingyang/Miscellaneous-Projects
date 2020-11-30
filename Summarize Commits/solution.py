@@ -119,6 +119,31 @@ def main(_):
         data_frame.loc[index, "Task"] = value
     extra_commit_messages = extra_commit_messages[len(dummy_task_indexes):]
 
+    # Use longer commit message
+    while True:
+        if len(extra_commit_messages) == 0:
+            break
+
+        # Find the index of the min or max value
+        data_frame_task_length_series = data_frame["Task"].map(lambda x: len(x))
+        index_in_data_frame_task = data_frame_task_length_series.idxmin()
+        value_in_data_frame_task = data_frame_task_length_series.loc[
+            index_in_data_frame_task]
+        extra_commit_message_length_list = [
+            len(item) for item in extra_commit_messages
+        ]
+        value_in_extra_commit_message = max(extra_commit_message_length_list)
+        index_in_extra_commit_message = extra_commit_message_length_list.index(
+            value_in_extra_commit_message)
+        if value_in_data_frame_task >= value_in_extra_commit_message:
+            break
+
+        # Swap values
+        data_frame.loc[index_in_data_frame_task, "Task"], extra_commit_messages[
+            index_in_extra_commit_message] = extra_commit_messages[
+                index_in_extra_commit_message], data_frame.loc[
+                    index_in_data_frame_task, "Task"]
+
     # Save the Excel sheet
     assert data_frame["Task"].duplicated().sum() == 0
     with pd.ExcelWriter(f"{FLAGS.start_date} {FLAGS.end_date}.xlsx") as writer:  # pylint: disable=abstract-class-instantiated
