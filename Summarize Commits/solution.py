@@ -12,13 +12,13 @@ flags.DEFINE_string("root_folder_path",
 flags.DEFINE_list("skipped_folder_names", "Miscellaneous Projects,PhD",
                   "Skipped folder names.")
 flags.DEFINE_string("author", "nixingyang", "Author.")
-flags.DEFINE_string("start_date", "2020-03-01", "Start date.")
-flags.DEFINE_string("end_date", "2020-06-30", "End date.")
+flags.DEFINE_string("start_date", "2020-12-01", "Start date.")
+flags.DEFINE_string("end_date", "2020-12-31", "End date.")
 flags.DEFINE_string(
     "holiday_dates",
     "2020-01-06 2020-04-10 2020-04-13 2020-05-01 2020-05-21 2020-06-19 2020-12-24 2020-12-25",
     "Holiday dates.")
-flags.DEFINE_string("hours", "7,35", "Working hours.")
+flags.DEFINE_string("hours", "7,25", "Working hours.")
 flags.DEFINE_string("dummy_task", "TBD", "Dummy value for the task.")
 FLAGS = flags.FLAGS
 
