@@ -1,7 +1,6 @@
 import calendar
 import datetime
 import os
-import subprocess
 
 import pandas as pd
 from absl import app, flags
@@ -21,39 +20,6 @@ flags.DEFINE_string(
 flags.DEFINE_string("hours", "7,25", "Working hours.")
 flags.DEFINE_string("dummy_task", "TBD", "Dummy value for the task.")
 FLAGS = flags.FLAGS
-
-
-def merge_commit_messages(commit_message_list,
-                          skipped_keywords=["Merge", "Revert"],
-                          max_commit_messages=5):
-    # Remove duplicate entries, and sort them
-    commit_message_list = sorted(set(commit_message_list))
-
-    # Skip commit messages which start with certain keywords
-    commit_message_list = [
-        item for item in commit_message_list
-        if sum([item.startswith(keyword) for keyword in skipped_keywords]) == 0
-    ]
-
-    commit_messages = []
-    start_index = 0
-    while start_index < len(commit_message_list):
-        # Get current trunk
-        entries = commit_message_list[start_index:start_index +
-                                      max_commit_messages]
-
-        # Merge entries
-        commit_message = "; ".join(sorted(entries))
-
-        # Replace ".;" with ";"
-        commit_message = commit_message.replace(".;", ";")
-
-        # Add entries
-        commit_messages.append(commit_message)
-
-        start_index += max_commit_messages
-
-    return commit_messages
 
 
 def main(_):
@@ -78,15 +44,7 @@ def main(_):
     extra_commit_messages = []
     current_datetime = start_datetime
     while current_datetime <= end_datetime:
-        date = f"{current_datetime.year}-{current_datetime.month}-{current_datetime.day}"
-        commit_message_list = []
-        for repository_folder_path in repository_folder_path_list:
-            # Retrieve commit messages
-            command = f"cd \"{repository_folder_path}\"; git log --pretty=format:\"%s\" --all --author=nixingyang --after=\"{date} 00:00\" --before=\"{date} 23:59\""
-            output = subprocess.check_output(command, shell=True, text=True)
-            if len(output) > 0:
-                commit_message_list += output.split("\n")
-        commit_messages = merge_commit_messages(commit_message_list)
+        commit_messages = []
 
         # Check whether it is a working day
         is_working_day = current_datetime.weekday(
