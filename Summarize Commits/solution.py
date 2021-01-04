@@ -36,27 +36,19 @@ def main(_):
     extra_commit_messages = []
     current_datetime = start_datetime
     while current_datetime <= end_datetime:
-        commit_messages = []
-
         # Check whether it is a working day
         is_working_day = current_datetime.weekday(
         ) <= 4 and current_datetime not in holiday_datetime_list
 
         # Add record to the data frame
         if is_working_day:
-            if len(commit_messages) == 0:
-                commit_messages = [FLAGS.dummy_task]
             data_frame = data_frame.append(pd.Series([
                 list(calendar.day_abbr)[current_datetime.weekday()],
                 f"{current_datetime.day}.{current_datetime.month}.{current_datetime.year}",
-                FLAGS.hours, commit_messages[0]
+                FLAGS.hours, FLAGS.dummy_task
             ],
                                                      index=data_frame.columns),
                                            ignore_index=True)
-            if len(commit_messages) > 1:
-                extra_commit_messages += commit_messages[1:]
-        elif len(commit_messages) > 0:
-            extra_commit_messages += commit_messages
 
         # Get the next day
         # https://stackoverflow.com/a/3240486
