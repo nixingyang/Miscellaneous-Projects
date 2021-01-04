@@ -1,16 +1,9 @@
 import calendar
 import datetime
-import os
 
 import pandas as pd
 from absl import app, flags
 
-flags.DEFINE_string("root_folder_path",
-                    os.path.expanduser("~/Documents/Local Storage/Source Code"),
-                    "Path of the root folder.")
-flags.DEFINE_list("skipped_folder_names", "Miscellaneous Projects,PhD",
-                  "Skipped folder names.")
-flags.DEFINE_string("author", "nixingyang", "Author.")
 flags.DEFINE_string("start_date", "2020-12-01", "Start date.")
 flags.DEFINE_string("end_date", "2020-12-31", "End date.")
 flags.DEFINE_string(
@@ -33,7 +26,6 @@ def main(_):
     ]
 
     data_frame = pd.DataFrame(columns=["Day", "Date", "Hours", "Task"])
-    extra_commit_messages = []
     current_datetime = start_datetime
     while current_datetime <= end_datetime:
         # Check whether it is a working day
@@ -54,50 +46,9 @@ def main(_):
         # https://stackoverflow.com/a/3240486
         current_datetime += datetime.timedelta(days=1)
 
-    # Fill in the records with dummy task
-    dummy_task_indexes = data_frame.index[data_frame["Task"] ==
-                                          FLAGS.dummy_task].tolist()
-    for index, value in zip(dummy_task_indexes, extra_commit_messages):
-        data_frame.loc[index, "Task"] = value
-    extra_commit_messages = extra_commit_messages[len(dummy_task_indexes):]
-
-    # Use longer commit message
-    while True:
-        if len(extra_commit_messages) == 0:
-            break
-
-        # Find the index of the min or max value
-        data_frame_task_length_series = data_frame["Task"].map(lambda x: len(x))
-        index_in_data_frame_task = data_frame_task_length_series.idxmin()
-        value_in_data_frame_task = data_frame_task_length_series.loc[
-            index_in_data_frame_task]
-        extra_commit_message_length_list = [
-            len(item) for item in extra_commit_messages
-        ]
-        value_in_extra_commit_message = max(extra_commit_message_length_list)
-        index_in_extra_commit_message = extra_commit_message_length_list.index(
-            value_in_extra_commit_message)
-        if value_in_data_frame_task >= value_in_extra_commit_message:
-            break
-
-        # Swap values
-        data_frame.loc[index_in_data_frame_task, "Task"], extra_commit_messages[
-            index_in_extra_commit_message] = extra_commit_messages[
-                index_in_extra_commit_message], data_frame.loc[
-                    index_in_data_frame_task, "Task"]
-
     # Save the Excel sheet
-    if data_frame["Task"].duplicated().sum() != 0:
-        print("There are duplicated entries.")
     with pd.ExcelWriter(f"{FLAGS.start_date} {FLAGS.end_date}.xlsx") as writer:  # pylint: disable=abstract-class-instantiated
         data_frame.to_excel(writer, index=False)
-
-    # Save the remaining unused commit messages
-    if len(extra_commit_messages) > 0:
-        with open(f"{FLAGS.start_date} {FLAGS.end_date}.txt",
-                  "w") as file_object:
-            for commit_message in extra_commit_messages:
-                file_object.write(f"{commit_message}\n")
 
     print("All done!")
 
