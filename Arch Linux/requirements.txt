@@ -47,4 +47,5 @@ vi
 vlc
 wget
 xdg-user-dirs
+xiaomi-adb-fastboot-tools
 yay-bin
