@@ -1,6 +1,7 @@
 import glob
 import os
 
+import arxiv
 from absl import app, flags
 
 flags.DEFINE_string("root_folder_path", "~/Downloads/Papers",
@@ -14,6 +15,15 @@ def main(_):
         os.path.expanduser(FLAGS.root_folder_path))
     file_path_list = sorted(
         glob.glob(os.path.join(root_folder_path, "**/*.pdf"), recursive=True))
+
+    # Iterate over the pdf files
+    for file_path in file_path_list:
+        # Query with id_without_version
+        id_without_version = ".".join(
+            os.path.basename(file_path).split(".")[:2]).split("v")[0]
+        query_results = arxiv.query(id_list=[id_without_version])
+        if not query_results:
+            continue
 
     print("All done!")
 
