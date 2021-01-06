@@ -1,4 +1,5 @@
 import glob
+import logging
 import os
 
 import arxiv
@@ -17,6 +18,11 @@ def main(_):
     source_file_path_list = sorted(
         glob.glob(os.path.join(root_folder_path, "**/*.pdf"), recursive=True))
     get_relative_path = lambda path: path[len(root_folder_path) + 1:]
+
+    # Disable the logger for arxiv.arxiv
+    # https://stackoverflow.com/a/2267567
+    logger = logging.getLogger("arxiv.arxiv")
+    logger.propagate = False
 
     # Iterate over the pdf files
     for source_file_path in source_file_path_list:
