@@ -1,12 +1,12 @@
+import ctypes
 import os
 import time
-
-from gi.repository import Gio
 from urllib.request import urlopen, urlretrieve
 from xml.etree import ElementTree
 
+from gi.repository import Gio
+
 # http://stackoverflow.com/questions/21356781
-import ctypes
 libc = ctypes.cdll.LoadLibrary("libc.so.6")
 res_init = libc.__res_init  # pylint: disable=protected-access
 
