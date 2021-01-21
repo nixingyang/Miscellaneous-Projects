@@ -6,10 +6,6 @@ from xml.etree import ElementTree
 
 from gi.repository import Gio
 
-# http://stackoverflow.com/questions/21356781
-libc = ctypes.cdll.LoadLibrary("libc.so.6")
-res_init = libc.__res_init  # pylint: disable=protected-access
-
 BING_MARKET = None
 SCREEN_RESOLUTION = "UHD"
 GALLERY_FOLDER_PATH = os.path.join(os.environ["HOME"], "Pictures/Bing Gallery")
@@ -17,8 +13,13 @@ WAITING_TIME_WHEN_SUCCESSFUL = 600
 WAITING_TIME_WHEN_UNSUCCESSFUL = 60
 
 
-def has_internet_connection(server_URL="https://www.bing.com"):
+def validate_internet_connection(server_URL="https://www.bing.com"):
     try:
+        # Re-read the resolver configuration file
+        # http://stackoverflow.com/questions/21356781
+        libc = ctypes.cdll.LoadLibrary("libc.so.6")
+        libc.__res_init()  # pylint: disable=protected-access
+
         with urlopen(server_URL) as _:
             return True
     except:
@@ -93,11 +94,8 @@ def run():
 
     while True:
         try:
-            # Re-read the resolver configuration file
-            res_init()
-
-            # Check internet connection
-            assert has_internet_connection()
+            # Validate internet connection
+            assert validate_internet_connection()
 
             # Delete redundant files
             previous_urlBase_list = delete_redundant_files(GALLERY_FOLDER_PATH)
