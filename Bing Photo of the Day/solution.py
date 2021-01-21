@@ -26,6 +26,22 @@ def validate_internet_connection(server_URL="https://www.bing.com"):
         return False
 
 
+extract_urlBase = lambda file_name: file_name.split(".")[0].split("_")[1]
+
+
+def delete_redundant_files(folder_path):
+    previous_urlBase_list = []
+    file_name_list = sorted(os.listdir(folder_path),
+                            key=lambda file_name: int(file_name.split("_")[0]))
+    for file_name in file_name_list:
+        urlBase = extract_urlBase(file_name)
+        if urlBase in previous_urlBase_list:
+            os.remove(os.path.join(folder_path, file_name))
+        else:
+            previous_urlBase_list.append(urlBase)
+    return previous_urlBase_list
+
+
 def retrieve_image_detail():
     image_detail_list = []
     market_argument = "" if BING_MARKET is None else "&mkt={}".format(
@@ -74,22 +90,6 @@ def change_background(image_path):
 def change_screensaver(image_path):
     change_setting("org.gnome.desktop.screensaver", "picture-uri",
                    format_file_path(image_path))
-
-
-extract_urlBase = lambda file_name: file_name.split(".")[0].split("_")[1]
-
-
-def delete_redundant_files(folder_path):
-    previous_urlBase_list = []
-    file_name_list = sorted(os.listdir(folder_path),
-                            key=lambda file_name: int(file_name.split("_")[0]))
-    for file_name in file_name_list:
-        urlBase = extract_urlBase(file_name)
-        if urlBase in previous_urlBase_list:
-            os.remove(os.path.join(folder_path, file_name))
-        else:
-            previous_urlBase_list.append(urlBase)
-    return previous_urlBase_list
 
 
 def run():
