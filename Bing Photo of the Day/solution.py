@@ -72,24 +72,18 @@ def retrieve_image_detail():
     return image_detail_list
 
 
-def format_file_path(file_path):
-    return "file://{}".format(file_path)
-
-
-def change_setting(schema, key, value):
-    setting_object = Gio.Settings.new(schema)
-    setting_object.set_string(key, value)
-    setting_object.apply()
-
-
 def change_background(image_path):
-    change_setting("org.gnome.desktop.background", "picture-uri",
-                   format_file_path(image_path))
 
+    def _format_file_path(file_path):
+        return "file://{}".format(file_path)
 
-def change_screensaver(image_path):
-    change_setting("org.gnome.desktop.screensaver", "picture-uri",
-                   format_file_path(image_path))
+    def _change_setting(schema, key, value):
+        setting_object = Gio.Settings.new(schema)
+        setting_object.set_string(key, value)
+        setting_object.apply()
+
+    _change_setting("org.gnome.desktop.background", "picture-uri",
+                    _format_file_path(image_path))
 
 
 def run():
@@ -116,12 +110,9 @@ def run():
                     urlretrieve(image_URL, image_path)
                 assert os.path.isfile(image_path)
 
+                # Set today's photo as the background
                 if image_index == 0:
-                    # Set today's photo as the background
                     change_background(image_path)
-                elif image_index == 1:
-                    # Set yesterday's photo as the screensaver
-                    change_screensaver(image_path)
 
             waiting_time = WAITING_TIME_WHEN_SUCCESSFUL
         except:
