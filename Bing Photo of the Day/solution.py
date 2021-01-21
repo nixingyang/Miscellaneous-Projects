@@ -26,10 +26,10 @@ def validate_internet_connection(server_URL="https://www.bing.com"):
         return False
 
 
-def yield_image_detail():
+def retrieve_image_detail():
+    image_detail_list = []
     market_argument = "" if BING_MARKET is None else "&mkt={}".format(
         BING_MARKET)
-
     for idx in [-1, 100]:
         # Compose the query URL
         query_URL = "https://www.bing.com/HPImageArchive.aspx?format=xml&idx={}&n=100{}".format(
@@ -48,7 +48,12 @@ def yield_image_detail():
                         "_")[0].split(".")[-1])
                 image_URL = "https://www.bing.com{}_{}.jpg".format(
                     image_metadata.find("urlBase").text, SCREEN_RESOLUTION)
-                yield image_name, image_URL
+
+                # Append the image detail
+                image_detail = (image_name, image_URL)
+                if image_detail not in image_detail_list:
+                    image_detail_list.append(image_detail)
+    return image_detail_list
 
 
 def format_file_path(file_path):
@@ -102,7 +107,7 @@ def run():
 
             # Iterate over image detail
             for image_index, (image_name,
-                              image_URL) in enumerate(yield_image_detail()):
+                              image_URL) in enumerate(retrieve_image_detail()):
                 # Download the image if necessary
                 urlBase = extract_urlBase(image_name)
                 image_path = os.path.join(GALLERY_FOLDER_PATH, image_name)
