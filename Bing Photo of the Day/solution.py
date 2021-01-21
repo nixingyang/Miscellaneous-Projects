@@ -11,7 +11,7 @@ libc = ctypes.cdll.LoadLibrary("libc.so.6")
 res_init = libc.__res_init  # pylint: disable=protected-access
 
 BING_MARKET = None
-SCREEN_RESOLUTION = "1920x1080"
+SCREEN_RESOLUTION = "UHD"
 GALLERY_FOLDER_PATH = os.path.join(os.environ["HOME"], "Pictures/Bing Gallery")
 WAITING_TIME_WHEN_SUCCESSFUL = 600
 WAITING_TIME_WHEN_UNSUCCESSFUL = 60
