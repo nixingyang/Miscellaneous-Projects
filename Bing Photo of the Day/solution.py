@@ -6,7 +6,7 @@ from xml.etree import ElementTree
 
 from gi.repository import Gio
 
-BING_MARKET = None
+BING_MARKET = "zh-cn"
 SCREEN_RESOLUTION = "UHD"
 GALLERY_FOLDER_PATH = os.path.join(os.environ["HOME"], "Pictures/Bing Gallery")
 WAITING_TIME_WHEN_SUCCESSFUL = 600
