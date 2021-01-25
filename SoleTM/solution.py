@@ -4,11 +4,11 @@ import datetime
 import pandas as pd
 from absl import app, flags
 
-flags.DEFINE_string("start_date", "2020-12-01", "Start date.")
-flags.DEFINE_string("end_date", "2020-12-31", "End date.")
+flags.DEFINE_string("start_date", "2021-01-01", "Start date.")
+flags.DEFINE_string("end_date", "2021-01-31", "End date.")
 flags.DEFINE_string(
     "holiday_dates",
-    "2020-01-06 2020-04-10 2020-04-13 2020-05-01 2020-05-21 2020-06-19 2020-12-24 2020-12-25",
+    "2021-01-01 2021-01-06 2021-04-02 2021-04-05 2021-05-13 2021-06-25 2021-12-06 2021-12-24",
     "Holiday dates.")
 flags.DEFINE_string("hours", "7,25", "Working hours.")
 flags.DEFINE_string("dummy_task", "TBD", "Dummy value for the task.")
