@@ -44,7 +44,10 @@ def main(_):
         target_file_path = os.path.abspath(
             os.path.join(source_file_path, "..",
                          f"{id_with_version} {title}.pdf"))
-        if not os.path.isfile(target_file_path):
+        if os.path.isfile(target_file_path):
+            if source_file_path != target_file_path:
+                os.remove(source_file_path)
+        else:
             print("Updating {} with {}".format(
                 get_relative_path(source_file_path),
                 get_relative_path(target_file_path)))
