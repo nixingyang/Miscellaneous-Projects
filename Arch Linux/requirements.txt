@@ -27,6 +27,7 @@ libva-vdpau-driver
 linux-firmware
 linux-lts
 linux-lts-headers
+man-db
 meld
 mendeleydesktop-bundled
 nautilus
