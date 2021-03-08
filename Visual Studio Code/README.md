@@ -1,5 +1,10 @@
 ### Workaround of issues in Visual Studio Code
 
+#### Set VS Code as the default text editor
+```bash
+xdg-mime default visual-studio-code.desktop text/plain
+```
+
 #### Breakpoint in file excluded by filters
 ```bash
 cat .vscode/launch.json
