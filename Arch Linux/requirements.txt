@@ -1,7 +1,6 @@
 base
 bash-completion
 bluez-utils
-code
 eog
 exfat-utils
 file-roller
@@ -44,6 +43,7 @@ spotify
 sshfs
 sushi
 vi
+visual-studio-code-bin
 vlc
 wget
 xdg-user-dirs
