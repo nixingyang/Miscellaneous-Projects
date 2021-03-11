@@ -42,6 +42,7 @@ smartgit
 spotify
 sshfs
 sushi
+unrar
 vi
 visual-studio-code-bin
 vlc
