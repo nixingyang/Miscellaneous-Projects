@@ -27,7 +27,6 @@ linux-lts-headers
 man-db
 meld
 mendeleydesktop-bundled
-miniconda3
 nautilus
 networkmanager-openvpn
 nordvpn-bin
