@@ -28,24 +28,33 @@ cat .vscode/launch.json
 
 #### User/settings.json
 ```bash
-cat ~/.config/Code\ -\ OSS/User/settings.json
+cat ~/.config/Code/User/settings.json
 {
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
-    "workbench.colorTheme": "Default Light+",
-    "workbench.startupEditor": "newUntitledFile",
-    "terminal.integrated.inheritEnv": false,
-    "editor.fontFamily": "'Noto Sans'",
-    "terminal.integrated.fontFamily": "'Noto Sans Mono'",
     "python.formatting.provider": "yapf",
     "python.formatting.yapfArgs": [
         "--style=google"
     ],
-    "editor.formatOnSave": true,
-    "python.formatting.yapfPath": "/home/xingyang/.miniconda3/envs/TensorFlow/bin/yapf",
-    "debug.console.fontFamily": "'Noto Sans'",
-    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "python.formatting.yapfPath": "/home/ni/.miniconda/envs/TensorFlow2.2/bin/yapf",
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "workbench.colorTheme": "Default Light+",
     "workbench.editor.enablePreview": false,
-    "explorer.confirmDelete": false
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.startupEditor": "none",
+    "workbench.editorAssociations": [
+        {
+            "viewType": "jupyter.notebook.ipynb",
+            "filenamePattern": "*.ipynb"
+        }
+    ],
+    "editor.formatOnSave": true,
+    "python.linting.pylintArgs": [
+        "--generated-members=cv2.*"
+    ],
+    "python.condaPath": "/home/ni/.miniconda/bin/conda",
+    "editor.fontFamily": "'Noto Sans'",
+    "debug.console.fontFamily": "'Noto Sans'",
+    "terminal.integrated.fontFamily": "'Noto Sans Mono'",
+    "explorer.confirmDelete": false,
 }
 ```
