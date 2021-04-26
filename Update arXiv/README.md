@@ -6,5 +6,5 @@
 conda create --yes --name arxiv python=3.8
 conda activate arxiv
 conda install --yes absl-py
-pip install arxiv
+pip install arxiv==0.5.4
 ```
