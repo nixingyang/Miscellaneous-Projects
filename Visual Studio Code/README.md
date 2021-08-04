@@ -30,31 +30,36 @@ cat .vscode/launch.json
 ```bash
 cat ~/.config/Code/User/settings.json
 {
+    "debug.console.fontFamily": "'Noto Sans'",
+    "editor.fontFamily": "'Noto Sans'",
+    "editor.formatOnSave": true,
+    "explorer.confirmDelete": false,
+    "latex-workshop.docker.enabled": true,
+    "latex-workshop.docker.image.latex": "texlive/texlive:TL2020-historic",
+    "latex-workshop.latex.autoClean.run": "onBuilt",
+    "python.condaPath": "/home/ni/.miniconda/bin/conda",
+    "python.defaultInterpreterPath": "/home/ni/.miniconda/envs/TensorFlow2.2/bin/python",
     "python.formatting.provider": "yapf",
     "python.formatting.yapfArgs": [
         "--style=google"
     ],
     "python.formatting.yapfPath": "/home/ni/.miniconda/envs/TensorFlow2.2/bin/yapf",
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
-    "workbench.colorTheme": "Default Light+",
-    "workbench.editor.enablePreview": false,
-    "workbench.editor.enablePreviewFromQuickOpen": false,
-    "workbench.startupEditor": "none",
-    "workbench.editorAssociations": [
-        {
-            "viewType": "jupyter.notebook.ipynb",
-            "filenamePattern": "*.ipynb"
-        }
-    ],
-    "editor.formatOnSave": true,
     "python.linting.pylintArgs": [
         "--generated-members=cv2.*"
     ],
-    "python.condaPath": "/home/ni/.miniconda/bin/conda",
-    "editor.fontFamily": "'Noto Sans'",
-    "debug.console.fontFamily": "'Noto Sans'",
+    "python.showStartPage": false,
+    "security.workspace.trust.enabled": false,
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
     "terminal.integrated.fontFamily": "'Noto Sans Mono'",
-    "explorer.confirmDelete": false,
+    "workbench.colorTheme": "Default Light+",
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.untitled.hint": "hidden",
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook",
+        "*.pdf": "default"
+    },
+    "workbench.startupEditor": "none",
 }
 ```
