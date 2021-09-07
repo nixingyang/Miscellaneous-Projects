@@ -11,6 +11,14 @@ flags.DEFINE_string("root_folder_path", "~/Downloads/Papers",
 FLAGS = flags.FLAGS
 
 
+def format_title(title):
+    title = title.replace(":", " ")
+    title = title.replace("\n", " ")
+    while "  " in title:
+        title = title.replace("  ", " ")
+    return title
+
+
 def main(_):
     # Find the pdf files within root_folder_path
     root_folder_path = os.path.abspath(
@@ -38,7 +46,7 @@ def main(_):
 
         # Update the pdf file if needed
         query_result = query_result_list[0]
-        title = query_result["title"]
+        title = format_title(query_result["title"])
         pdf_url = query_result["pdf_url"]
         id_with_version = pdf_url.split("/")[-1]
         target_file_path = os.path.abspath(
