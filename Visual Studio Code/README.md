@@ -60,6 +60,6 @@ cat ~/.config/Code/User/settings.json
         "*.ipynb": "jupyter-notebook",
         "*.pdf": "default"
     },
-    "workbench.startupEditor": "none",
+    "workbench.startupEditor": "none"
 }
 ```
