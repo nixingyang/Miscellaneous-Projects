@@ -1,6 +1,7 @@
 base
 bash-completion
 bluez-utils
+code-marketplace
 cups
 docker
 eog
@@ -41,7 +42,6 @@ spotify
 sushi
 unrar
 vi
-visual-studio-code-bin
 vlc
 wget
 xdg-user-dirs
