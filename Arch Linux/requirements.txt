@@ -3,7 +3,6 @@ bash-completion
 bluez-utils
 code-marketplace
 cups
-docker
 eog
 exfat-utils
 file-roller
@@ -37,7 +36,6 @@ nvidia-dkms
 p7zip
 papirus-icon-theme
 qbittorrent
-smartgit
 spotify
 sushi
 unrar
