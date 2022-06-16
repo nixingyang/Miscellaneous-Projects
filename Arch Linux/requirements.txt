@@ -17,6 +17,7 @@ gnome-system-monitor
 gnome-terminal
 gnome-tweaks
 google-chrome
+gst-libav
 gvfs-mtp
 intel-ucode
 libreoffice-still
@@ -38,9 +39,9 @@ papirus-icon-theme
 qbittorrent
 spotify
 sushi
+totem
 unrar
 vi
-vlc
 wget
 xdg-user-dirs
 yay-bin
