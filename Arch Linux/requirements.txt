@@ -38,6 +38,7 @@ nvidia-dkms
 p7zip
 papirus-icon-theme
 qbittorrent
+rhythmbox
 spotify
 sushi
 totem
