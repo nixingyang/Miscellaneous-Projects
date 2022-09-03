@@ -10,7 +10,6 @@ file-roller
 gdm
 gnome-backgrounds
 gnome-control-center
-gnome-icon-theme
 gnome-keyring
 gnome-screenshot
 gnome-shell-extension-system-monitor-git
