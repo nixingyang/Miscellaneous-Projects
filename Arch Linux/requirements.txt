@@ -17,7 +17,6 @@ gnome-system-monitor
 gnome-terminal
 gnome-tweaks
 google-chrome
-gst-libav
 gvfs-mtp
 intel-ucode
 libreoffice-still
@@ -37,12 +36,11 @@ nvidia-dkms
 p7zip
 papirus-icon-theme
 qbittorrent
-rhythmbox
 spotify
 sushi
-totem
 unrar
 vi
+vlc
 wget
 xdg-user-dirs
 yay-bin
