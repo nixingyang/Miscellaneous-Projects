@@ -36,7 +36,6 @@ nvidia-dkms
 p7zip
 papirus-icon-theme
 qbittorrent
-spotify
 sushi
 unrar
 vi
