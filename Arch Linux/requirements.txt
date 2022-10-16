@@ -5,6 +5,7 @@ bluez-utils
 chromium
 code-marketplace
 cups
+docker
 eog
 exfat-utils
 file-roller
