@@ -2,6 +2,7 @@ android-tools
 base
 bash-completion
 bluez-utils
+chromium
 code-marketplace
 cups
 eog
@@ -16,7 +17,6 @@ gnome-shell-extension-system-monitor-git
 gnome-system-monitor
 gnome-terminal
 gnome-tweaks
-google-chrome
 gvfs-mtp
 intel-ucode
 libreoffice-still
