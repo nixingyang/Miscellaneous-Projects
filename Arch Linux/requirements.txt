@@ -14,7 +14,7 @@ gnome-backgrounds
 gnome-control-center
 gnome-keyring
 gnome-screenshot
-gnome-shell-extension-system-monitor-git
+gnome-shell-extension-system-monitor-next-git
 gnome-system-monitor
 gnome-terminal
 gnome-tweaks
@@ -28,7 +28,6 @@ linux-lts-headers
 man-db
 meld
 nautilus
-networkmanager
 nordvpn-bin
 noto-fonts
 noto-fonts-emoji
