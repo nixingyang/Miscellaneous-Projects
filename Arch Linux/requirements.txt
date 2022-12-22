@@ -28,7 +28,7 @@ linux-lts-headers
 man-db
 meld
 nautilus
-networkmanager-openvpn
+networkmanager
 nordvpn-bin
 noto-fonts
 noto-fonts-emoji
