@@ -35,6 +35,7 @@ ntfs-3g
 nvidia-dkms
 p7zip
 papirus-icon-theme
+python-pip
 qbittorrent
 sushi
 unrar
