@@ -3,6 +3,7 @@ base
 bash-completion
 bluez-utils
 chromium
+code-features
 code-marketplace
 cups
 docker
@@ -12,7 +13,6 @@ file-roller
 gdm
 gnome-backgrounds
 gnome-control-center
-gnome-keyring
 gnome-screenshot
 gnome-shell-extension-system-monitor-next-git
 gnome-system-monitor
