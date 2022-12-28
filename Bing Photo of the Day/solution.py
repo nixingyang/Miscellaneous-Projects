@@ -4,6 +4,8 @@ import time
 from urllib.request import urlopen, urlretrieve
 from xml.etree import ElementTree
 
+import cv2
+import numpy as np
 from gi.repository import Gio
 
 BING_MARKET = "zh-cn"
@@ -80,6 +82,13 @@ def retrieve_image_detail():
     return image_detail_list
 
 
+def remove_corrupted_image(image_path):
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    variance = np.var(image, axis=1)
+    if 0 in variance:
+        os.remove(image_path)
+
+
 def change_background(image_path):
     def _format_file_path(file_path):
         return "file://{}".format(file_path)
@@ -118,10 +127,10 @@ def run():
                     image_path
                 ):
                     urlretrieve(image_URL, image_path)
-                assert os.path.isfile(image_path)
+                    remove_corrupted_image(image_path)
 
                 # Set today's photo as the background
-                if image_index == 0:
+                if image_index == 0 and os.path.isfile(image_path):
                     change_background(image_path)
 
             waiting_time = WAITING_TIME_WHEN_SUCCESSFUL
