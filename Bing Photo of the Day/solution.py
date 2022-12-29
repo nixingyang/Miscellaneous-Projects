@@ -29,7 +29,7 @@ def validate_internet_connection(server_URL="https://www.bing.com"):
 extract_urlBase = lambda file_name: file_name.split(".")[0].split("_")[1]
 
 
-def delete_redundant_files(folder_path):
+def remove_redundant_files(folder_path):
     previous_urlBase_list = []
     file_name_list = sorted(
         os.listdir(folder_path), key=lambda file_name: int(file_name.split("_")[0])
@@ -37,7 +37,8 @@ def delete_redundant_files(folder_path):
     for file_name in file_name_list:
         urlBase = extract_urlBase(file_name)
         if urlBase in previous_urlBase_list:
-            os.remove(os.path.join(folder_path, file_name))
+            file_path = os.path.join(folder_path, file_name)
+            os.remove(file_path)
         else:
             previous_urlBase_list.append(urlBase)
     return previous_urlBase_list
@@ -80,12 +81,12 @@ def retrieve_image_detail():
     return image_detail_list
 
 
-def remove_corrupted_image(image_path):
+def remove_corrupted_file(file_path):
     # https://stackoverflow.com/a/48282863
-    with open(image_path, "rb") as file:
+    with open(file_path, "rb") as file:
         characters = file.read()[-2:]
     if characters != b"\xff\xd9":
-        os.remove(image_path)
+        os.remove(file_path)
 
 
 def change_background(image_path):
@@ -113,7 +114,7 @@ def run():
             assert validate_internet_connection()
 
             # Delete redundant files
-            previous_urlBase_list = delete_redundant_files(GALLERY_FOLDER_PATH)
+            previous_urlBase_list = remove_redundant_files(GALLERY_FOLDER_PATH)
 
             # Iterate over image detail
             for image_index, (image_name, image_URL) in enumerate(
@@ -126,7 +127,7 @@ def run():
                     image_path
                 ):
                     urlretrieve(image_URL, image_path)
-                    remove_corrupted_image(image_path)
+                    remove_corrupted_file(image_path)
 
                 # Set today's photo as the background
                 if image_index == 0 and os.path.isfile(image_path):
