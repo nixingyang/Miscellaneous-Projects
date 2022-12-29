@@ -4,8 +4,6 @@ import time
 from urllib.request import urlopen, urlretrieve
 from xml.etree import ElementTree
 
-import cv2
-import numpy as np
 from gi.repository import Gio
 
 BING_MARKET = "zh-cn"
@@ -83,9 +81,10 @@ def retrieve_image_detail():
 
 
 def remove_corrupted_image(image_path):
-    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-    variance = np.var(image, axis=1)
-    if 0 in variance:
+    # https://stackoverflow.com/a/48282863
+    with open(image_path, "rb") as file:
+        characters = file.read()[-2:]
+    if characters != b"\xff\xd9":
         os.remove(image_path)
 
 
