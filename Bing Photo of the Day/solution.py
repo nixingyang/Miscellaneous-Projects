@@ -89,16 +89,16 @@ def remove_corrupted_file(file_path):
         os.remove(file_path)
 
 
-def change_background(image_path):
+def update_background(image_path):
     def _format_file_path(file_path):
         return "file://{}".format(file_path)
 
-    def _change_setting(schema, key, value):
+    def _update_setting(schema, key, value):
         setting_object = Gio.Settings.new(schema)
         setting_object.set_string(key, value)
         setting_object.apply()
 
-    _change_setting(
+    _update_setting(
         "org.gnome.desktop.background", "picture-uri", _format_file_path(image_path)
     )
 
@@ -131,7 +131,7 @@ def run():
 
                 # Set today's photo as the background
                 if image_index == 0 and os.path.isfile(image_path):
-                    change_background(image_path)
+                    update_background(image_path)
 
             waiting_time = WAITING_TIME_WHEN_SUCCESSFUL
         except:

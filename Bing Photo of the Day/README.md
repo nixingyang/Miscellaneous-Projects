@@ -1,7 +1,7 @@
 ### Bing Photo of the Day
 
 #### Overview
-This directory contains Python implementation which is capable of updating the background and screensaver automatically.
+This directory contains Python implementation which is capable of updating the background automatically.
 
 #### Notes
 * The idea is originated by [Utkarsh Gupta](https://github.com/UtkarshGpta/bing-desktop-wallpaper-changer) and I have modified the script to suit my needs.
