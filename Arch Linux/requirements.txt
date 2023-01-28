@@ -30,6 +30,7 @@ meld
 nautilus
 nordvpn-bin
 noto-fonts
+noto-fonts-cjk
 noto-fonts-emoji
 ntfs-3g
 nvidia-dkms
