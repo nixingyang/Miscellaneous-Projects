@@ -28,7 +28,7 @@ cat .vscode/launch.json
 
 #### User/settings.json
 ```bash
-cat ~/.config/Code\ -\ OSS/User/settings.json
+cat ~/.config/Code/User/settings.json
 {
     "debug.console.fontFamily": "Noto Sans",
     "diffEditor.ignoreTrimWhitespace": false,
