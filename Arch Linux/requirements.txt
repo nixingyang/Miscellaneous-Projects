@@ -1,5 +1,4 @@
 android-tools
-base
 base-devel
 bash-completion
 bluez-utils
