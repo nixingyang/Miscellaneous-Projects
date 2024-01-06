@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Terminal=false
+Exec=python3 "/home/ni/Documents/Development/Miscellaneous-Projects/Bing Photo of the Day/solution.py"
+Name=Bing Photo of the Day
