@@ -1,6 +1,7 @@
 import argparse
 import glob
 import os
+import shutil
 
 argument_parser = argparse.ArgumentParser()
 argument_parser.add_argument("--source_folder_path", default="XboxCaptureCopies")
@@ -22,7 +23,7 @@ def run():
         workspace_folder_path = os.path.join(arguments.target_folder_path, title)
         os.makedirs(workspace_folder_path, exist_ok=True)
         target_file_path = os.path.join(workspace_folder_path, timestamp)
-        os.rename(source_file_path, target_file_path)
+        shutil.move(source_file_path, target_file_path)
 
     print("All done!")
 
