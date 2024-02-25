@@ -8,7 +8,7 @@ from gi.repository import Gio
 
 BING_MARKET = "zh-cn"
 SCREEN_RESOLUTION = "UHD"
-GALLERY_FOLDER_PATH = os.path.join(os.environ["HOME"], "Pictures/Bing Gallery")
+GALLERY_FOLDER_PATH = os.path.join(os.environ["HOME"], "Documents/Drive/Photos/Bing Gallery")
 WAITING_TIME_WHEN_SUCCESSFUL = 600
 WAITING_TIME_WHEN_UNSUCCESSFUL = 60
 
