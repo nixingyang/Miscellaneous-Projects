@@ -7,22 +7,28 @@
 			"Packages" : 
 			[
 				{
+					"PackageIdentifier" : "BartoszCichecki.LenovoLegionToolkit"
+				},
+				{
+					"PackageIdentifier" : "ElectronicArts.EADesktop"
+				},
+				{
+					"PackageIdentifier" : "EpicGames.EpicGamesLauncher"
+				},
+				{
 					"PackageIdentifier" : "Google.Chrome"
-				},
-				{
-					"PackageIdentifier" : "Valve.Steam"
-				},
-				{
-					"PackageIdentifier" : "Ubisoft.Connect"
-				},
-				{
-					"PackageIdentifier" : "Overwolf.CurseForge"
 				},
 				{
 					"PackageIdentifier" : "Google.GoogleDrive"
 				},
 				{
-					"PackageIdentifier" : "EpicGames.EpicGamesLauncher"
+					"PackageIdentifier" : "Overwolf.CurseForge"
+				},
+				{
+					"PackageIdentifier" : "Ubisoft.Connect"
+				},
+				{
+					"PackageIdentifier" : "Valve.Steam"
 				}
 			],
 			"SourceDetails" : 
