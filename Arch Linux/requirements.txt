@@ -3,8 +3,6 @@ base-devel
 bash-completion
 bluez-utils
 chromium
-code-features
-code-marketplace
 cups
 docker
 eog
@@ -41,6 +39,7 @@ qbittorrent
 sushi
 unrar
 vi
+visual-studio-code-bin
 vlc
 wget
 xdg-user-dirs
