@@ -17,7 +17,12 @@ def run():
     # Process the source files
     for source_file_path in source_file_path_list:
         source_file_name = os.path.basename(source_file_path)
-        separator_index = source_file_name.find("-")
+        separator_indexes = [
+            index
+            for index in range(len(source_file_name))
+            if source_file_name[index] == "-"
+        ]
+        separator_index = separator_indexes[-2]
         title = source_file_name[:separator_index]
         timestamp = source_file_name[separator_index + 1 :]
         workspace_folder_path = os.path.join(arguments.target_folder_path, title)
