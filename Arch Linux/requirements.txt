@@ -2,6 +2,7 @@ android-tools
 base-devel
 bash-completion
 bluez-utils
+capitaine-cursors
 cups
 docker
 eog
